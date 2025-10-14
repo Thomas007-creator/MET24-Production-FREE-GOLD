@@ -40,7 +40,7 @@ const PWATest = React.lazy(() => import('./PWATest'));
 const MockTestPage = React.lazy(() => import('./MockTestPage'));
 const OnboardingFlowSimulator = React.lazy(() => import('./OnboardingFlowSimulator'));
 const V14AuditIntegrationTestPage = React.lazy(() => import('./TestPages/V14AuditIntegrationTestPage'));
-const MPNetTestComponent = React.lazy(() => import('./testing/MPNetTestComponent'));
+// const MPNetTestComponent = React.lazy(() => import('./testing/MPNetTestComponent')); // Temporarily disabled for deployment
 const AICoachingInterface = React.lazy(() => import('./AICoachingInterface'));
 const WellnessAnalysisInterface = React.lazy(() => import('./WellnessAnalysisInterface'));
 const ActiveImaginationInterface = React.lazy(() => import('./ActiveImaginationInterface'));
@@ -168,7 +168,7 @@ const AppRoutes: React.FC = () => {
             <Route path='/chatllm-rag' element={<ChatLLMRAGInterface />} />
             <Route path='/personal-coach' element={<PersonalMBTICoachInterface />} />
             <Route path='/test-ai-buddy' element={<AIBuddyTest />} />
-            <Route path='/test-mpnet' element={<MPNetTestComponent />} />
+            {/* <Route path='/test-mpnet' element={<MPNetTestComponent />} /> */} {/* Temporarily disabled for deployment */}
             <Route path='/test-bmad' element={<BMADDashboard />} />
             <Route path='/test-database' element={<DatabaseMigrationTest />} />
             <Route path='/test-sync' element={<SyncServiceDemo />} />

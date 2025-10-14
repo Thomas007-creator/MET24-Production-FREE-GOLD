@@ -39,9 +39,10 @@ ENV VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
 ENV VAPID_EMAIL=$VAPID_EMAIL
 ENV GENERATE_SOURCEMAP=false
 ENV CI=true
+ENV NODE_OPTIONS="--max-old-space-size=8192"
 
-# Build applicatie
-RUN npm run build
+# Build applicatie met optimalisaties
+RUN npm run build:coolify
 
 # Install serve voor production
 RUN npm install -g serve

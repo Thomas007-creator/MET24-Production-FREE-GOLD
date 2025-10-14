@@ -417,6 +417,15 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 // Integration with BMAD Dashboard
+// Export for ES6 modules
+export default BMADAgentTeam;
+
+// Export for CommonJS
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = BMADAgentTeam;
+}
+
+// Export for browser
 if (typeof window !== 'undefined') {
   window.BMADAgentTeam = BMADAgentTeam;
 }

@@ -120,7 +120,7 @@ class ChatLLMServiceManager {
 
     try {
       // Create WebLLM worker
-      this.worker = new Worker('/src/workers/webLLMWorker.js');
+      // this.worker = new Worker('/src/workers/webLLMWorker.js'); // Temporarily disabled for deployment
       
       this.worker.onmessage = (event) => {
         this.handleWorkerMessage(event.data);

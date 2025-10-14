@@ -1,7 +1,7 @@
 // 🤖 all-MiniLM-L12-v2 Embedding Service for MET24
 // Privacy-first local embedding generation with high quality for MBTI coaching
 
-import { pipeline, env } from '@xenova/transformers';
+// import { pipeline, env } from '@xenova/transformers'; // Temporarily disabled for deployment
 
 interface EmbeddingResult {
   embedding: number[];
@@ -48,16 +48,8 @@ class MPNetL12EmbeddingService {
     try {
       console.log('🚀 Initializing all-MiniLM-L12-v2 model...');
       
-      // Privacy-first: Use local models only
-      env.allowRemoteModels = false;
-      env.allowLocalModels = true;
-      
-      const startTime = Date.now();
-      this.model = await pipeline('feature-extraction', this.modelName);
-      const loadTime = Date.now() - startTime;
-      
-      this.isInitialized = true;
-      console.log(`✅ all-MiniLM-L12-v2 loaded successfully in ${loadTime}ms`);
+      // Temporarily disabled for deployment - AI/ML features will be re-enabled later
+      throw new Error('AI/ML features temporarily disabled for deployment');
       
     } catch (error) {
       console.error('❌ Failed to initialize all-MiniLM-L12-v2:', error);
