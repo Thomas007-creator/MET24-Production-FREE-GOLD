@@ -1,0 +1,124 @@
+# AI Buddy Coolify Deployment Environment Variables
+# Based on successful main-k0g4wgck0g0wgw4owwoocs84 deployment
+# ⚠️ SECURITY WARNING: Copy this to .env and fill in your actual values!
+
+# ================================================
+# CORE APPLICATION VARIABLES
+# ================================================
+
+# Supabase Configuration
+REACT_APP_SUPABASE_URL=your_supabase_url_here
+REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+
+# VAPID Keys for Push Notifications (CRITICAL - Previously hardcoded!)
+VAPID_PUBLIC_KEY=your_vapid_public_key_here
+VAPID_PRIVATE_KEY=your_vapid_private_key_here
+VAPID_EMAIL=mailto:your-email@domain.com
+
+# ================================================
+# AI PROVIDER API KEYS
+# ================================================
+
+# MCP Bridge Configuration
+MCP_API_KEY=your_mcp_api_key_here
+
+# AI Provider Keys (Optional - will use free tiers if not provided)
+GROK_API_KEY=your_grok_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# ================================================
+# COOLIFY DEPLOYMENT VARIABLES
+# ================================================
+
+# SSL Configuration (Required for Let's Encrypt)
+SSL_EMAIL=admin@your-future-self.app
+
+# Coolify Application Configuration
+COOLIFY_APPLICATION_ID=33183
+COOLIFY_PROJECT_NAME=met24-production
+COOLIFY_SERVICE_NAME=thomas007-creator-m-e-t24-production-ai-buddy
+COOLIFY_ENVIRONMENT_NAME=production
+COOLIFY_PULL_REQUEST_ID=0
+
+# Service URLs (Based on successful deployment)
+SERVICE_URL_MET24_USER_APP=www.your-future-self.app
+SERVICE_FQDN_MET24_USER_APP=
+SERVICE_URL_MET24_MCP_BRIDGE=www.your-future-self.app/mcp
+SERVICE_FQDN_MET24_MCP_BRIDGE=
+COOLIFY_URL=www.your-future-self.app://www.your-future-self.app
+COOLIFY_FQDN=www.your-future-self.app
+
+# ================================================
+# AI BUDDY SPECIFIC CONFIGURATION
+# ================================================
+
+# Push Notification Settings
+PUSH_NOTIFICATION_ENABLED=true
+PUSH_NOTIFICATION_BATCH_SIZE=100
+PUSH_NOTIFICATION_RETRY_ATTEMPTS=3
+PUSH_NOTIFICATION_RETRY_DELAY=5000
+
+# Notification Types
+NOTIFICATION_ACTION_PLAN_REMINDER=true
+NOTIFICATION_WELLNESS_CHECK=true
+NOTIFICATION_THERAPY_SESSION=true
+NOTIFICATION_GOAL_ACHIEVEMENT=true
+
+# AI Buddy Features
+AI_BUDDY_MEMORY_ENABLED=true
+AI_BUDDY_REFUSAL_LOGIC_ENABLED=true
+AI_BUDDY_AUDIT_LOGGING_ENABLED=true
+AI_BUDDY_TRUST_SYSTEM_ENABLED=true
+
+# Rate Limiting Configuration
+RATE_LIMIT_ENABLED=true
+RATE_LIMIT_REQUESTS_PER_MINUTE=60
+RATE_LIMIT_BURST_SIZE=10
+RATE_LIMIT_FREE_TIER_LIMIT=50
+
+# ================================================
+# SECURITY & COMPLIANCE
+# ================================================
+
+# Environment
+NODE_ENV=production
+PORT=3000
+MCP_PORT=3001
+
+# Database Settings
+DATABASE_URL=your_database_url_here
+DATABASE_POOL_SIZE=20
+DATABASE_IDLE_TIMEOUT=30000
+
+# Monitoring & Analytics
+SENTRY_DSN=your_sentry_dsn_here
+ANALYTICS_ENABLED=true
+
+# ================================================
+# COOLIFY WEBHOOKS (Optional)
+# ================================================
+
+# Coolify Deployment Webhooks
+COOLIFY_PRODUCTION_WEBHOOK_URL=your_coolify_production_webhook_url_here
+COOLIFY_DEVELOPMENT_WEBHOOK_URL=your_coolify_development_webhook_url_here
+
+# ================================================
+# DEPLOYMENT NOTES
+# ================================================
+
+# This configuration is based on the successful deployment:
+# thomas007-creator/-m-e-t24--production:main-k0g4wgck0g0wgw4owwoocs84
+#
+# Key differences from standard deployment:
+# - Coolify-specific labels and environment variables
+# - Unique resource UUID generation
+# - Proper network configuration
+# - SSL certificate management
+# - Health check configuration
+#
+# To deploy:
+# 1. Copy this file to .env
+# 2. Fill in your actual values
+# 3. Run: ./scripts/deploy-ai-buddy-coolify.sh

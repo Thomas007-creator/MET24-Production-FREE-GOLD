@@ -1,0 +1,57 @@
+# ================================================
+# MET2.4 SIMPLE PRODUCTION DOCKERFILE
+# Voor Coolify Deployment
+# ================================================
+
+FROM node:20-alpine
+
+# Install curl for health checks
+RUN apk add --no-cache curl wget
+
+# Metadata
+LABEL maintainer="MET2.4 Production Team"
+LABEL description="MET2.4 PWA Simple Production Build"
+
+# Working directory
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm ci --silent
+
+# Copy source code
+COPY . .
+
+# Build arguments
+ARG NODE_ENV=production
+ARG REACT_APP_SUPABASE_URL
+ARG REACT_APP_SUPABASE_ANON_KEY
+ARG VAPID_PUBLIC_KEY
+ARG VAPID_PRIVATE_KEY
+ARG VAPID_EMAIL
+
+# Environment variables
+ENV NODE_ENV=$NODE_ENV
+ENV REACT_APP_SUPABASE_URL=$REACT_APP_SUPABASE_URL
+ENV REACT_APP_SUPABASE_ANON_KEY=$REACT_APP_SUPABASE_ANON_KEY
+ENV VAPID_PUBLIC_KEY=$VAPID_PUBLIC_KEY
+ENV VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
+ENV VAPID_EMAIL=$VAPID_EMAIL
+ENV GENERATE_SOURCEMAP=false
+ENV CI=true
+
+# Build applicatie
+RUN npm run build
+
+# Install serve voor production
+RUN npm install -g serve
+
+# Expose port  
+EXPOSE 80
+
+# Health check (test eerst /health.html, dan root)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:80/health.html || wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
+
+# Start applicatie op port 80 (zoals verwacht door Traefik)
+CMD ["serve", "-s", "build", "-l", "80"]

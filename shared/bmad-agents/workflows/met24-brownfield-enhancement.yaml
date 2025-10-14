@@ -1,0 +1,167 @@
+# MET24 Brownfield Enhancement Workflow
+
+## Workflow Configuration
+```yaml
+workflow:
+  id: met24-brownfield-enhancement
+  name: MET24 Brownfield Feature Enhancement
+  version: 1.0
+  domain: MET24 Complete Ecosystem
+  type: brownfield
+```
+
+## Workflow Overview
+
+Deze workflow is ontworpen voor het toevoegen van nieuwe features aan het bestaande MET24 Complete Ecosystem, met speciale aandacht voor:
+
+- Cross-app impact analysis
+- WatermelonDB schema wijzigingen
+- AI coaching service integraties
+- Shared component updates
+
+## Workflow Stages
+
+### Stage 1: System Analysis
+**Agent**: @met24-analyst
+**Duration**: 1-2 uur
+**Deliverables**:
+- Current system documentation
+- Impact analysis van proposed changes
+- Technical debt assessment
+
+**Commands**:
+```bash
+@met24-analyst
+*document-project [focus-area]
+*analyze-codebase [app-name]
+*assess-ai-architecture
+```
+
+### Stage 2: Requirements Definition
+**Agent**: @met24-pm
+**Duration**: 2-3 uur
+**Deliverables**:
+- Brownfield PRD
+- Cross-app impact specifications
+- AI coaching integration requirements
+
+**Commands**:
+```bash
+@met24-pm
+*create-brownfield-prd
+*feature-impact [feature-name]
+*ai-coaching-requirements
+```
+
+### Stage 3: Architecture Planning
+**Agent**: @architect
+**Duration**: 1-2 uur
+**Deliverables**:
+- Technical architecture updates
+- Database schema changes
+- API integration specifications
+
+**Dependencies**: PRD from Stage 2
+
+### Stage 4: Development Planning
+**Agent**: @sm
+**Duration**: 1 uur
+**Deliverables**:
+- User stories with full context
+- Development task breakdown
+- Testing strategy
+
+**Dependencies**: Architecture from Stage 3
+
+### Stage 5: Implementation
+**Agent**: @met24-dev
+**Duration**: Variable
+**Deliverables**:
+- Working feature implementation
+- Unit tests and integration tests
+- Documentation updates
+
+**Dependencies**: Stories from Stage 4
+
+### Stage 6: Quality Assurance
+**Agent**: @qa
+**Duration**: 1-2 uur
+**Deliverables**:
+- Code review feedback
+- Cross-app testing results
+- Performance assessment
+
+## Decision Points
+
+### Database Changes Required?
+- **Yes**: Include WatermelonDB migration planning
+- **No**: Focus on component and service changes
+
+### Cross-App Impact?
+- **High**: Coordinate changes across admin-app and user-app
+- **Low**: Focus on specific app implementation
+
+### AI Integration Changes?
+- **Yes**: Include AI service testing and conversation flow validation
+- **No**: Standard feature implementation workflow
+
+## Specific Considerations for MET24
+
+### WatermelonDB Changes
+- Plan migration scripts for schema updates
+- Test sync mechanisms with new data structures
+- Validate offline-first functionality
+
+### AI Coaching Integration
+- Test conversation flow changes
+- Validate AI service rate limiting
+- Ensure graceful error handling
+
+### Cross-App Coordination
+- Verify shared component compatibility
+- Test admin-app monitoring of user-app features
+- Validate configuration synchronization
+
+### Deployment Considerations
+- Plan Coolify deployment updates
+- Update Docker configurations if needed
+- Coordinate environment variable changes
+
+## Success Criteria
+
+### Technical
+- [ ] All tests passing (unit, integration, e2e)
+- [ ] No performance regression
+- [ ] Successful WatermelonDB sync
+- [ ] AI services responding correctly
+- [ ] Cross-app compatibility maintained
+
+### Product
+- [ ] Feature requirements met
+- [ ] User experience improved
+- [ ] Admin visibility maintained
+- [ ] Coaching effectiveness enhanced
+
+### Operational
+- [ ] Successful deployment to staging
+- [ ] Monitoring and logging updated
+- [ ] Documentation current
+- [ ] Team training completed
+
+## Tools and Resources
+
+### Development Tools
+- TypeScript strict mode validation
+- React Testing Library
+- WatermelonDB query profiling
+- AI service integration testing
+
+### Deployment Tools
+- Coolify deployment pipeline
+- Docker multi-stage builds
+- Environment configuration management
+- Health check validation
+
+---
+
+*BMAD Workflow voor MET24 Complete Ecosystem - Geoptimaliseerd voor brownfield feature enhancement*

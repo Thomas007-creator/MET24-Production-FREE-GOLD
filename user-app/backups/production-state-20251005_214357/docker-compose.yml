@@ -1,0 +1,174 @@
+version: '3.8'
+
+services:
+  # MET2.4 User App - Production (Coolify Optimized)
+  met24-user-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    container_name: met24-user-app
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_NODE_ENV=production
+      - REACT_APP_BUILD_TARGET=coolify
+      - REACT_APP_API_URL=${REACT_APP_API_URL:-https://www.your-future-self.app/api}
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY}
+      - REACT_APP_MCP_BRIDGE_URL=${REACT_APP_MCP_BRIDGE_URL:-https://mcp.your-future-self.app}
+      - SERVICE_URL_MET24_MCP_BRIDGE=${SERVICE_URL_MET24_MCP_BRIDGE:-https://mcp.your-future-self.app}
+      - SERVICE_URL_MET24_USER_APP=${SERVICE_URL_MET24_USER_APP:-https://www.your-future-self.app}
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
+      - VAPID_EMAIL=${VAPID_EMAIL:-mailto:osteomedica.utrecht@gmail.com}
+      - SSL_EMAIL=${SSL_EMAIL:-osteomedica.utrecht@gmail.com}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - coolify
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.user-app.rule=Host(`www.your-future-self.app`)"
+      - "traefik.http.routers.user-app.entrypoints=websecure"
+      - "traefik.http.routers.user-app.tls.certresolver=letsencrypt"
+      - "traefik.http.services.user-app.loadbalancer.server.port=80"
+      # HTTP to HTTPS redirect
+      - "traefik.http.routers.user-app-http.rule=Host(`www.your-future-self.app`)"
+      - "traefik.http.routers.user-app-http.entrypoints=web"
+      - "traefik.http.routers.user-app-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+  # MCP Bridge - Production (Coolify Optimized with subdomain)
+  met24-mcp-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcp-bridge
+    container_name: met24-mcp-bridge
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_NODE_ENV=production
+      - REACT_APP_API_URL=${REACT_APP_API_URL:-https://www.your-future-self.app/api}
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY}
+      - SERVICE_URL_MET24_USER_APP=${SERVICE_URL_MET24_USER_APP:-https://www.your-future-self.app}
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
+      - VAPID_EMAIL=${VAPID_EMAIL:-mailto:osteomedica.utrecht@gmail.com}
+      - MCP_API_KEY=${MCP_API_KEY}
+      - GROK_API_KEY=${GROK_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - coolify
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mcp-bridge.rule=Host(`mcp.your-future-self.app`)"
+      - "traefik.http.routers.mcp-bridge.entrypoints=websecure"
+      - "traefik.http.routers.mcp-bridge.tls.certresolver=letsencrypt"
+      - "traefik.http.services.mcp-bridge.loadbalancer.server.port=3001"
+      # HTTP to HTTPS redirect
+      - "traefik.http.routers.mcp-bridge-http.rule=Host(`mcp.your-future-self.app`)"
+      - "traefik.http.routers.mcp-bridge-http.entrypoints=web"
+      - "traefik.http.routers.mcp-bridge-http.middlewares=redirect-to-https"
+
+  # Discourse Community Platform - Production
+  discourse:
+    image: discourse/discourse:stable
+    container_name: met24-discourse
+    environment:
+      - DISCOURSE_HOSTNAME=community.your-future-self.app
+      - DISCOURSE_PORT=80
+      - DISCOURSE_DEVELOPER_EMAILS=${SSL_EMAIL:-osteomedica.utrecht@gmail.com}
+      - DISCOURSE_SMTP_ADDRESS=${SMTP_ADDRESS:-smtp.gmail.com}
+      - DISCOURSE_SMTP_PORT=${SMTP_PORT:-587}
+      - DISCOURSE_SMTP_USER_NAME=${SMTP_USER:-osteomedica.utrecht@gmail.com}
+      - DISCOURSE_SMTP_PASSWORD=${SMTP_PASSWORD}
+      - DISCOURSE_DB_HOST=discourse-postgres
+      - DISCOURSE_DB_NAME=discourse
+      - DISCOURSE_DB_USERNAME=discourse
+      - DISCOURSE_DB_PASSWORD=${DISCOURSE_DB_PASSWORD:-discourse_secure_pass_2024}
+      - DISCOURSE_REDIS_HOST=discourse-redis
+      - DISCOURSE_SSO_SECRET=${DISCOURSE_SSO_SECRET:-your_sso_secret_here_2024}
+      - DISCOURSE_ENABLE_CORS=true
+      - DISCOURSE_CORS_ORIGIN=https://www.your-future-self.app,https://mcp.your-future-self.app
+      # Disable AI plugin temporarily to avoid vector extension requirement
+      - DISCOURSE_SKIP_POST_DEPLOYMENT_MIGRATIONS=true
+    restart: unless-stopped
+    depends_on:
+      - discourse-postgres
+      - discourse-redis
+    volumes:
+      - discourse-data:/shared
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/srv/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+    networks:
+      - coolify
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.discourse.rule=Host(`community.your-future-self.app`)"
+      - "traefik.http.routers.discourse.entrypoints=websecure"
+      - "traefik.http.routers.discourse.tls.certresolver=letsencrypt"
+      - "traefik.http.services.discourse.loadbalancer.server.port=80"
+      # HTTP to HTTPS redirect
+      - "traefik.http.routers.discourse-http.rule=Host(`community.your-future-self.app`)"
+      - "traefik.http.routers.discourse-http.entrypoints=web"
+      - "traefik.http.routers.discourse-http.middlewares=redirect-to-https"
+
+  # Discourse PostgreSQL Database (met pgvector support)
+  discourse-postgres:
+    image: pgvector/pgvector:pg15
+    container_name: met24-discourse-postgres
+    environment:
+      - POSTGRES_DB=discourse
+      - POSTGRES_USER=discourse
+      - POSTGRES_PASSWORD=${DISCOURSE_DB_PASSWORD:-discourse_secure_pass_2024}
+    restart: unless-stopped
+    volumes:
+      - discourse-postgres-data:/var/lib/postgresql/data
+    networks:
+      - coolify
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U discourse"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Discourse Redis Cache
+  discourse-redis:
+    image: redis:7-alpine
+    container_name: met24-discourse-redis
+    restart: unless-stopped
+    volumes:
+      - discourse-redis-data:/data
+    networks:
+      - coolify
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  discourse-data:
+  discourse-postgres-data:
+  discourse-redis-data:
+
+networks:
+  coolify:
+    external: true

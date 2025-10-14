@@ -1,0 +1,62 @@
+# ================================================
+# MET2.4 DEVELOPMENT DOCKER COMPOSE
+# Development App (3002) - Admin Tools
+# ================================================
+
+version: '3.8'
+
+services:
+  # Development App - Port 3002
+  met24-development:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:3002
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY}
+      - REACT_APP_OPENAI_API_KEY=${REACT_APP_OPENAI_API_KEY}
+      - DEV_API_KEY=${DEV_API_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - DEVELOPMENT_MODE=true
+      - HOT_RELOAD=true
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./server:/app/server
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - met24-dev-network
+
+  # Development Database (Optional)
+  met24-dev-db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=met24_dev
+      - POSTGRES_USER=met24_dev
+      - POSTGRES_PASSWORD=${DEV_DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - met24-dev-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - met24-dev-network
+
+networks:
+  met24-dev-network:
+    driver: bridge
+
+volumes:
+  met24-dev-data:
+    driver: local
+

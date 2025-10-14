@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import design system styles */
+@import './styles/design-system.css';
+
+/* Import glassmorphism styles */
+@import './styles/glass.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #000000 !important;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Force override all purple/indigo backgrounds */
+* {
+  --tw-bg-opacity: 1;
+}
+
+.bg-purple-50, .bg-purple-100, .bg-purple-200, .bg-purple-300, 
+.bg-purple-400, .bg-purple-500, .bg-purple-600, .bg-purple-700, 
+.bg-purple-800, .bg-purple-900,
+.bg-indigo-50, .bg-indigo-100, .bg-indigo-200, .bg-indigo-300, 
+.bg-indigo-400, .bg-indigo-500, .bg-indigo-600, .bg-indigo-700, 
+.bg-indigo-800, .bg-indigo-900,
+.bg-violet-50, .bg-violet-100, .bg-violet-200, .bg-violet-300, 
+.bg-violet-400, .bg-violet-500, .bg-violet-600, .bg-violet-700, 
+.bg-violet-800, .bg-violet-900 {
+  background: transparent !important;
+}
+
+/* Force override gradient backgrounds with purple */
+.bg-gradient-to-br, .bg-gradient-to-r, .bg-gradient-to-l,
+.bg-gradient-to-t, .bg-gradient-to-b, .bg-gradient-to-tr,
+.bg-gradient-to-tl, .bg-gradient-to-bl {
+  background: transparent !important;
+}
+
+/* DEBUG: Show element borders to identify purple sources */
+.debug-mode * {
+  border: 1px solid red !important;
+  position: relative !important;
+}
+
+.debug-mode *:before {
+  content: attr(class);
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: yellow;
+  color: black;
+  font-size: 10px;
+  padding: 2px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Enhanced scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  /* Prevent horizontal scroll on mobile */
+  * {
+    max-width: 100%;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+  body {
+    font-size: 15px;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1025px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+code {
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+#root {
+  min-height: 100vh;
+}

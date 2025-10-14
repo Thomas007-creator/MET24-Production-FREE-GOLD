@@ -1,0 +1,734 @@
+import { AIStreamHandler } from '../aiStreamHandler';
+
+// Mock logger
+jest.mock('../../utils/logger', () => ({
+  logger: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn()
+  }
+}));
+
+// Mock AI client
+jest.mock('../../lib/api/aiClient', () => ({
+  streamAiResponse: jest.fn()
+}));
+
+describe('AIStreamHandler', () => {
+  let handler: AIStreamHandler;
+
+  beforeEach(() => {
+    handler = AIStreamHandler.getInstance();
+    jest.clearAllMocks();
+  });
+
+  describe('streamResponse', () => {
+    it('should stream response successfully', async () => {
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'Hello' };
+          yield { content: ' World' };
+        }
+      };
+
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockResolvedValue(mockStream);
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        mbtiType: 'INFJ',
+        promptContext: 'Test prompt'
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamResponse('openai', 'test prompt', options)) {
+        chunks.push(chunk);
+      }
+
+      expect(chunks).toEqual([
+        { content: 'Hello' },
+        { content: ' World' }
+      ]);
+    });
+
+    it('handles streaming response successfully', async () => {
+      const mockStream = async function* () {
+        yield 'Chunk 1';
+        yield 'Chunk 2';
+      };
+      
+      jest.spyOn(handler as any, 'callAIStream').mockImplementation(() => mockStream());
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        mbtiType: 'INFJ',
+        promptContext: 'Test prompt'
+      };
+
+      const generator = handler.streamResponse('openai', 'Test prompt', options);
+      const chunks: any[] = [];
+      for await (const chunk of generator) {
+        chunks.push(chunk);
+      }
+      
+      expect(chunks).toEqual(['Chunk 1', 'Chunk 2']);
+    });
+
+    it('should retry on failure', async () => {
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'Retry response' };
+        }
+      };
+
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse
+        .mockRejectedValueOnce(new Error('First attempt failed'))
+        .mockResolvedValueOnce(mockStream);
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        maxRetries: 1,
+        retryDelay: 10
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamResponse('openai', 'test prompt', options)) {
+        chunks.push(chunk);
+        if (chunks.length > 3) break; // Prevent infinite loop
+      }
+
+      expect(chunks[0]).toEqual({ error: 'Stream failed, retrying... (1/1)' });
+      expect(chunks[1]).toEqual({ content: 'Retry response' });
+    });
+
+    it('should fail after max retries', async () => {
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockRejectedValue(new Error('Persistent failure'));
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        maxRetries: 1,
+        retryDelay: 10
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamResponse('openai', 'test prompt', options)) {
+        chunks.push(chunk);
+        if (chunks.length > 5) break; // Prevent infinite loop
+      }
+
+      expect(chunks[chunks.length - 1]).toEqual({
+        error: 'Stream failed after maximum retries. Please try again later.'
+      });
+    });
+  });
+
+  describe('streamWithProvider', () => {
+    it('should use preferred provider', async () => {
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'Claude response' };
+        }
+      };
+
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockResolvedValue(mockStream);
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        preferredProvider: 'claude' as const
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamWithProvider('test message', options)) {
+        chunks.push(chunk);
+      }
+
+      expect(chunks).toEqual([{ content: 'Claude response' }]);
+    });
+  });
+
+  describe('streamWithFallback', () => {
+    it('should try multiple providers on failure', async () => {
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'Gemini response' };
+        }
+      };
+
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse
+        .mockRejectedValueOnce(new Error('OpenAI failed'))
+        .mockRejectedValueOnce(new Error('Claude failed'))
+        .mockResolvedValueOnce(mockStream);
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        providers: ['openai', 'claude', 'gemini'] as any
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamWithFallback('test message', options)) {
+        chunks.push(chunk);
+        if (chunks.length > 5) break; // Prevent infinite loop
+      }
+
+      expect(chunks[0]).toEqual({ error: 'openai failed, trying next provider...' });
+      expect(chunks[1]).toEqual({ error: 'claude failed, trying next provider...' });
+      expect(chunks[2]).toEqual({ content: 'Gemini response' });
+    });
+
+    it('should fail when all providers fail', async () => {
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockRejectedValue(new Error('All providers failed'));
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        providers: ['openai', 'claude'] as any
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamWithFallback('test message', options)) {
+        chunks.push(chunk);
+        if (chunks.length > 5) break; // Prevent infinite loop
+      }
+
+      expect(chunks[chunks.length - 1]).toEqual({
+        error: 'All providers failed. Last error: All providers failed'
+      });
+    });
+  });
+
+  describe('healthCheck', () => {
+    it('should return health status for all providers', async () => {
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockResolvedValue({
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'test' };
+        }
+      });
+
+      const health = await handler.healthCheck();
+
+      expect(health).toHaveProperty('status');
+      expect(health).toHaveProperty('providers');
+      expect(health.status).toMatch(/^(healthy|degraded|unhealthy)$/);
+      expect(health.providers).toHaveProperty('openai');
+      expect(health.providers).toHaveProperty('claude');
+      expect(health.providers).toHaveProperty('gemini');
+      expect(health.providers).toHaveProperty('grok');
+      expect(health.providers).toHaveProperty('local');
+    });
+  });
+
+  describe('retry statistics', () => {
+    it('should track retry statistics', () => {
+      const stats = handler.getRetryStats();
+      expect(typeof stats).toBe('object');
+    });
+
+    it('should clear retry statistics', () => {
+      handler.clearRetryStats();
+      const stats = handler.getRetryStats();
+      expect(Object.keys(stats)).toHaveLength(0);
+    });
+  });
+});
+
+// Mock logger
+jest.mock('../../utils/logger', () => ({
+  logger: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn()
+  }
+}));
+
+// Mock AI client
+jest.mock('../../lib/api/aiClient', () => ({
+  streamAiResponse: jest.fn()
+}));
+
+describe('AIStreamHandler', () => {
+  let handler: AIStreamHandler;
+
+  beforeEach(() => {
+    handler = AIStreamHandler.getInstance();
+    jest.clearAllMocks();
+  });
+
+  describe('streamResponse', () => {
+    it('should stream response successfully', async () => {
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'Hello' };
+          yield { content: ' World' };
+        }
+      };
+
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockResolvedValue(mockStream);
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        mbtiType: 'INFJ',
+        promptContext: 'Test prompt'
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamResponse('openai', 'test prompt', options)) {
+        chunks.push(chunk);
+      }
+
+      expect(chunks).toEqual([
+        { content: 'Hello' },
+        { content: ' World' }
+      ]);
+    });
+
+    it('handles streaming response successfully', async () => {
+      const mockStream = async function* () {
+        yield 'Chunk 1';
+        yield 'Chunk 2';
+      };
+      
+      jest.spyOn(handler as any, 'callAIStream').mockImplementation(() => mockStream());
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        mbtiType: 'INFJ',
+        promptContext: 'Test prompt'
+      };
+
+      const generator = handler.streamResponse('openai', 'Test prompt', options);
+      const chunks: any[] = [];
+      for await (const chunk of generator) {
+        chunks.push(chunk);
+      }
+      
+      expect(chunks).toEqual(['Chunk 1', 'Chunk 2']);
+    });
+
+    it('should retry on failure', async () => {
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'Retry response' };
+        }
+      };
+
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse
+        .mockRejectedValueOnce(new Error('First attempt failed'))
+        .mockResolvedValueOnce(mockStream);
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        maxRetries: 1,
+        retryDelay: 10
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamResponse('openai', 'test prompt', options)) {
+        chunks.push(chunk);
+        if (chunks.length > 3) break; // Prevent infinite loop
+      }
+
+      expect(chunks[0]).toEqual({ error: 'Stream failed, retrying... (1/1)' });
+      expect(chunks[1]).toEqual({ content: 'Retry response' });
+    });
+
+    it('should fail after max retries', async () => {
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockRejectedValue(new Error('Persistent failure'));
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        maxRetries: 1,
+        retryDelay: 10
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamResponse('openai', 'test prompt', options)) {
+        chunks.push(chunk);
+        if (chunks.length > 5) break; // Prevent infinite loop
+      }
+
+      expect(chunks[chunks.length - 1]).toEqual({
+        error: 'Stream failed after maximum retries. Please try again later.'
+      });
+    });
+  });
+
+  describe('streamWithProvider', () => {
+    it('should use preferred provider', async () => {
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'Claude response' };
+        }
+      };
+
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockResolvedValue(mockStream);
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        preferredProvider: 'claude' as const
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamWithProvider('test message', options)) {
+        chunks.push(chunk);
+      }
+
+      expect(chunks).toEqual([{ content: 'Claude response' }]);
+    });
+  });
+
+  describe('streamWithFallback', () => {
+    it('should try multiple providers on failure', async () => {
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'Gemini response' };
+        }
+      };
+
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse
+        .mockRejectedValueOnce(new Error('OpenAI failed'))
+        .mockRejectedValueOnce(new Error('Claude failed'))
+        .mockResolvedValueOnce(mockStream);
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        providers: ['openai', 'claude', 'gemini'] as any
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamWithFallback('test message', options)) {
+        chunks.push(chunk);
+        if (chunks.length > 5) break; // Prevent infinite loop
+      }
+
+      expect(chunks[0]).toEqual({ error: 'openai failed, trying next provider...' });
+      expect(chunks[1]).toEqual({ error: 'claude failed, trying next provider...' });
+      expect(chunks[2]).toEqual({ content: 'Gemini response' });
+    });
+
+    it('should fail when all providers fail', async () => {
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockRejectedValue(new Error('All providers failed'));
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        providers: ['openai', 'claude'] as any
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamWithFallback('test message', options)) {
+        chunks.push(chunk);
+        if (chunks.length > 5) break; // Prevent infinite loop
+      }
+
+      expect(chunks[chunks.length - 1]).toEqual({
+        error: 'All providers failed. Last error: All providers failed'
+      });
+    });
+  });
+
+  describe('healthCheck', () => {
+    it('should return health status for all providers', async () => {
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockResolvedValue({
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'test' };
+        }
+      });
+
+      const health = await handler.healthCheck();
+
+      expect(health).toHaveProperty('status');
+      expect(health).toHaveProperty('providers');
+      expect(health.status).toMatch(/^(healthy|degraded|unhealthy)$/);
+      expect(health.providers).toHaveProperty('openai');
+      expect(health.providers).toHaveProperty('claude');
+      expect(health.providers).toHaveProperty('gemini');
+      expect(health.providers).toHaveProperty('grok');
+      expect(health.providers).toHaveProperty('local');
+    });
+  });
+
+  describe('retry statistics', () => {
+    it('should track retry statistics', () => {
+      const stats = handler.getRetryStats();
+      expect(typeof stats).toBe('object');
+    });
+
+    it('should clear retry statistics', () => {
+      handler.clearRetryStats();
+      const stats = handler.getRetryStats();
+      expect(Object.keys(stats)).toHaveLength(0);
+    });
+  });
+});
+
+// Mock logger
+jest.mock('../../utils/logger', () => ({
+  logger: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn()
+  }
+}));
+
+// Mock AI client
+jest.mock('../../lib/api/aiClient', () => ({
+  streamAiResponse: jest.fn()
+}));
+
+describe('AIStreamHandler', () => {
+  let handler: AIStreamHandler;
+
+  beforeEach(() => {
+    handler = AIStreamHandler.getInstance();
+    jest.clearAllMocks();
+  });
+
+  describe('streamResponse', () => {
+    it('should stream response successfully', async () => {
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'Hello' };
+          yield { content: ' World' };
+        }
+      };
+
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockResolvedValue(mockStream);
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        mbtiType: 'INFJ',
+        promptContext: 'Test prompt'
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamResponse('openai', 'test prompt', options)) {
+        chunks.push(chunk);
+      }
+
+      expect(chunks).toEqual([
+        { content: 'Hello' },
+        { content: ' World' }
+      ]);
+    });
+
+    it('handles streaming response successfully', async () => {
+      const mockStream = async function* () {
+        yield 'Chunk 1';
+        yield 'Chunk 2';
+      };
+      
+      jest.spyOn(handler as any, 'callAIStream').mockImplementation(() => mockStream());
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        mbtiType: 'INFJ',
+        promptContext: 'Test prompt'
+      };
+
+      const generator = handler.streamResponse('openai', 'Test prompt', options);
+      const chunks: any[] = [];
+      for await (const chunk of generator) {
+        chunks.push(chunk);
+      }
+      
+      expect(chunks).toEqual(['Chunk 1', 'Chunk 2']);
+    });
+
+    it('should retry on failure', async () => {
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'Retry response' };
+        }
+      };
+
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse
+        .mockRejectedValueOnce(new Error('First attempt failed'))
+        .mockResolvedValueOnce(mockStream);
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        maxRetries: 1,
+        retryDelay: 10
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamResponse('openai', 'test prompt', options)) {
+        chunks.push(chunk);
+        if (chunks.length > 3) break; // Prevent infinite loop
+      }
+
+      expect(chunks[0]).toEqual({ error: 'Stream failed, retrying... (1/1)' });
+      expect(chunks[1]).toEqual({ content: 'Retry response' });
+    });
+
+    it('should fail after max retries', async () => {
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockRejectedValue(new Error('Persistent failure'));
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        maxRetries: 1,
+        retryDelay: 10
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamResponse('openai', 'test prompt', options)) {
+        chunks.push(chunk);
+        if (chunks.length > 5) break; // Prevent infinite loop
+      }
+
+      expect(chunks[chunks.length - 1]).toEqual({
+        error: 'Stream failed after maximum retries. Please try again later.'
+      });
+    });
+  });
+
+  describe('streamWithProvider', () => {
+    it('should use preferred provider', async () => {
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'Claude response' };
+        }
+      };
+
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockResolvedValue(mockStream);
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        preferredProvider: 'claude' as const
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamWithProvider('test message', options)) {
+        chunks.push(chunk);
+      }
+
+      expect(chunks).toEqual([{ content: 'Claude response' }]);
+    });
+  });
+
+  describe('streamWithFallback', () => {
+    it('should try multiple providers on failure', async () => {
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'Gemini response' };
+        }
+      };
+
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse
+        .mockRejectedValueOnce(new Error('OpenAI failed'))
+        .mockRejectedValueOnce(new Error('Claude failed'))
+        .mockResolvedValueOnce(mockStream);
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        providers: ['openai', 'claude', 'gemini'] as any
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamWithFallback('test message', options)) {
+        chunks.push(chunk);
+        if (chunks.length > 5) break; // Prevent infinite loop
+      }
+
+      expect(chunks[0]).toEqual({ error: 'openai failed, trying next provider...' });
+      expect(chunks[1]).toEqual({ error: 'claude failed, trying next provider...' });
+      expect(chunks[2]).toEqual({ content: 'Gemini response' });
+    });
+
+    it('should fail when all providers fail', async () => {
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockRejectedValue(new Error('All providers failed'));
+
+      const options = {
+        sessionId: 'test-session',
+        userId: 'test-user',
+        providers: ['openai', 'claude'] as any
+      };
+
+      const chunks: any[] = [];
+      for await (const chunk of handler.streamWithFallback('test message', options)) {
+        chunks.push(chunk);
+        if (chunks.length > 5) break; // Prevent infinite loop
+      }
+
+      expect(chunks[chunks.length - 1]).toEqual({
+        error: 'All providers failed. Last error: All providers failed'
+      });
+    });
+  });
+
+  describe('healthCheck', () => {
+    it('should return health status for all providers', async () => {
+      const { streamAiResponse } = require('../../lib/api/aiClient');
+      streamAiResponse.mockResolvedValue({
+        [Symbol.asyncIterator]: async function* () {
+          yield { content: 'test' };
+        }
+      });
+
+      const health = await handler.healthCheck();
+
+      expect(health).toHaveProperty('status');
+      expect(health).toHaveProperty('providers');
+      expect(health.status).toMatch(/^(healthy|degraded|unhealthy)$/);
+      expect(health.providers).toHaveProperty('openai');
+      expect(health.providers).toHaveProperty('claude');
+      expect(health.providers).toHaveProperty('gemini');
+      expect(health.providers).toHaveProperty('grok');
+      expect(health.providers).toHaveProperty('local');
+    });
+  });
+
+  describe('retry statistics', () => {
+    it('should track retry statistics', () => {
+      const stats = handler.getRetryStats();
+      expect(typeof stats).toBe('object');
+    });
+
+    it('should clear retry statistics', () => {
+      handler.clearRetryStats();
+      const stats = handler.getRetryStats();
+      expect(Object.keys(stats)).toHaveLength(0);
+    });
+  });
+});
+
+
+
+
