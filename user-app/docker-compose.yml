@@ -5,7 +5,7 @@ services:
   met24-user-app:
     build:
       context: .
-      dockerfile: Dockerfile.production
+      dockerfile: Dockerfile
     container_name: met24-user-app
     environment:
       - NODE_ENV=production

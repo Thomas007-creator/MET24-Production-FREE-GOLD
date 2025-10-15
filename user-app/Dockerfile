@@ -1,61 +1,58 @@
-# =====================================================
-# MET2.4 MBTI Coach PWA - Production Dockerfile V14
-# Version: 2.4.1 V14 - Future-Ready Production
-# Features: PWA, WatermelonDB V14, AI Integration, Extension System, V14 Sync
-# =====================================================
+# ================================================
+# MET2.4 SIMPLE PRODUCTION DOCKERFILE
+# Voor Coolify Deployment
+# ================================================
 
-# Multi-stage build for MET2.4 MBTI Coach PWA
-FROM node:18-alpine as build
+FROM node:20-alpine
 
-# Set working directory
+# Install curl for health checks
+RUN apk add --no-cache curl wget
+
+# Metadata
+LABEL maintainer="MET2.4 Production Team"
+LABEL description="MET2.4 PWA Simple Production Build"
+
+# Working directory
 WORKDIR /app
 
-# Install system dependencies for native modules
-RUN apk add --no-cache python3 make g++ curl
-
-# Copy package files
+# Install dependencies
 COPY package*.json ./
-
-# Install all dependencies with legacy peer deps for compatibility
-RUN npm ci --legacy-peer-deps --silent
+RUN npm ci --silent
 
 # Copy source code
 COPY . .
 
-# Build the application for production
-ENV NODE_ENV=production
-ENV REACT_APP_NODE_ENV=production
+# Build arguments
+ARG NODE_ENV=production
+ARG REACT_APP_SUPABASE_URL
+ARG REACT_APP_SUPABASE_ANON_KEY
+ARG VAPID_PUBLIC_KEY
+ARG VAPID_PRIVATE_KEY
+ARG VAPID_EMAIL
+
+# Environment variables
+ENV NODE_ENV=$NODE_ENV
+ENV REACT_APP_SUPABASE_URL=$REACT_APP_SUPABASE_URL
+ENV REACT_APP_SUPABASE_ANON_KEY=$REACT_APP_SUPABASE_ANON_KEY
+ENV VAPID_PUBLIC_KEY=$VAPID_PUBLIC_KEY
+ENV VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
+ENV VAPID_EMAIL=$VAPID_EMAIL
 ENV GENERATE_SOURCEMAP=false
-ENV DISABLE_ESLINT_PLUGIN=true
+ENV CI=true
+ENV NODE_OPTIONS="--max-old-space-size=8192"
 
-# Build the PWA
-RUN npm run build
+# Build applicatie met optimalisaties
+RUN npm run build:coolify
 
-# Production stage with Nginx
-FROM nginx:alpine
+# Install serve voor production
+RUN npm install -g serve
 
-# Install wget for health checks
-RUN apk add --no-cache wget
-
-# Copy built application from build stage
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Copy nginx configuration for PWA
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Create health check endpoint
-RUN echo '<!DOCTYPE html><html><head><title>Health Check</title></head><body><h1>MET2.4 MBTI Coach V14 - Healthy</h1><p>WatermelonDB V14 Active</p></body></html>' > /usr/share/nginx/html/health
-
-# Set proper permissions
-RUN chown -R nginx:nginx /usr/share/nginx/html
-RUN chmod -R 755 /usr/share/nginx/html
-
-# Expose port 80
+# Expose port  
 EXPOSE 80
 
-# Health check
+# Health check (test eerst /health.html, dan root)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:80/health.html || wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start applicatie op port 80 (zoals verwacht door Traefik)
+CMD ["serve", "-s", "build", "-l", "80"]
