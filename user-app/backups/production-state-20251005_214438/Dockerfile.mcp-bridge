@@ -1,0 +1,52 @@
+# ================================================
+# MET2.4 MCP BRIDGE DOCKERFILE
+# Voor MCP Bridge service op port 3001
+# ================================================
+
+FROM node:20-alpine
+
+# Install curl for health checks
+RUN apk add --no-cache curl wget
+
+# Metadata
+LABEL maintainer="MET2.4 Production Team"
+LABEL description="MET2.4 MCP Bridge Service"
+
+# Working directory
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm ci --silent
+
+# Copy source code
+COPY . .
+
+# Build arguments
+ARG NODE_ENV=production
+ARG REACT_APP_SUPABASE_URL
+ARG REACT_APP_SUPABASE_ANON_KEY
+ARG MCP_API_KEY
+ARG VAPID_PUBLIC_KEY
+ARG VAPID_PRIVATE_KEY
+ARG VAPID_EMAIL
+
+# Environment variables
+ENV NODE_ENV=$NODE_ENV
+ENV REACT_APP_SUPABASE_URL=$REACT_APP_SUPABASE_URL
+ENV REACT_APP_SUPABASE_ANON_KEY=$REACT_APP_SUPABASE_ANON_KEY
+ENV MCP_API_KEY=$MCP_API_KEY
+ENV VAPID_PUBLIC_KEY=$VAPID_PUBLIC_KEY
+ENV VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
+ENV VAPID_EMAIL=$VAPID_EMAIL
+ENV PORT=3001
+
+# Expose port 3001 for MCP Bridge
+EXPOSE 3001
+
+# Health check for MCP Bridge
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:3001/health || exit 1
+
+# Start MCP Bridge service - Force rebuild
+CMD ["npm", "run", "server:mcp"]

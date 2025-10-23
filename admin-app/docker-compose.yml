@@ -1,0 +1,423 @@
+# =====================================================
+# MET2.4 MBTI Coach PWA - Complete Docker Setup V14
+# Version: 2.4.1 V14 - Future-Ready Production
+# Features: PWA, WatermelonDB V14, AI Integration, Extension System, V14 Sync
+# =====================================================
+
+version: '3.8'
+
+services:
+  # MET2.4 MBTI Coach PWA - Production
+  met24-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: met24-mbti-coach
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_NODE_ENV=production
+      - REACT_APP_API_URL=http://localhost:3001
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL:-}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY:-}
+      - REACT_APP_OPENAI_API_KEY=${REACT_APP_OPENAI_API_KEY:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.met24.rule=Host(`met24.local`)"
+      - "traefik.http.services.met24.loadbalancer.server.port=80"
+    networks:
+      - met24-network
+
+  # MCP-Bridge service for API communication
+  met24-mcp-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: met24-mcp-bridge
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:3001
+      - REACT_APP_MCP_BRIDGE=true
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL:-}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY:-}
+      - REACT_APP_OPENAI_API_KEY=${REACT_APP_OPENAI_API_KEY:-}
+      - REDIS_URL=redis://met24-redis:6379
+      - REDIS_CONNECTION_STRING=redis://met24-redis:6379
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - met24-redis
+    profiles:
+      - mcp
+    networks:
+      - met24-network
+
+  # Mini-MCP Orchestrator Background Service
+  met24-mini-mcp-orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: met24-mini-mcp-orchestrator
+    environment:
+      - NODE_ENV=development
+      - DOCKER_ENV=true
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL:-}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY:-}
+      - REACT_APP_OPENAI_API_KEY=${REACT_APP_OPENAI_API_KEY:-}
+      - REDIS_URL=redis://met24-redis:6379
+      - REDIS_CONNECTION_STRING=redis://met24-redis:6379
+      - DATABASE_URL=postgresql://met24user:met24_secure_password@met24-supabase-db:5432/met24_db
+      - MET244_SUPABASE_URL=${REACT_APP_SUPABASE_URL:-}
+      - MET244_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY:-}
+    restart: unless-stopped
+    depends_on:
+      - met24-redis
+    profiles:
+      - mcp
+      - orchestrator
+    networks:
+      - met24-network
+    command: ["node", "server/mini-mcp/orchestrator.js"]
+
+  # Content Loader Service - Development App Integration
+  met24-content-loader:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: met24-content-loader
+    ports:
+      - "3006:3000"
+    environment:
+      - NODE_ENV=development
+      - DOCKER_ENV=true
+      - CONTENT_LOADER_SERVICE=true
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL:-}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY:-}
+      - REACT_APP_OPENAI_API_KEY=${REACT_APP_OPENAI_API_KEY:-}
+      - CONTENT_LOADER_BATCH_SIZE=50
+      - CONTENT_LOADER_ENCRYPTION=true
+      - CONTENT_LOADER_RETRY_ATTEMPTS=3
+      - CONTENT_LOADER_RETRY_DELAY=1000
+      - MCP_BRIDGE_URL=http://met24-mcp-bridge:3000
+      - DEV_APP_URL=http://met24-dev:3000
+    restart: unless-stopped
+    depends_on:
+      - met24-mcp-bridge
+      - met24-dev
+    profiles:
+      - content-loader
+      - dev
+    networks:
+      - met24-network
+    command: ["node", "server/content-loader-service.js"]
+
+  # Alternative MCP-Bridge service (port 3005)
+  met24-mcp-bridge-alt:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: met24-mcp-bridge-alt
+    ports:
+      - "3005:3000"
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:3005
+      - REACT_APP_MCP_BRIDGE=true
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL:-}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY:-}
+      - REACT_APP_OPENAI_API_KEY=${REACT_APP_OPENAI_API_KEY:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    profiles:
+      - mcp-alt
+    networks:
+      - met24-network
+
+  # Development version with hot reload (VPN-only access)
+  met24-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: met24-mbti-coach-dev
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:3002
+      - REACT_APP_MCP_BRIDGE_URL=http://localhost:3001
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL:-}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY:-}
+      - REACT_APP_OPENAI_API_KEY=${REACT_APP_OPENAI_API_KEY:-}
+      - CONTENT_LOADER_ENABLED=true
+      - CONTENT_LOADER_BATCH_SIZE=50
+      - CONTENT_LOADER_ENCRYPTION=true
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./package.json:/app/package.json
+    restart: unless-stopped
+    profiles:
+      - dev
+    networks:
+      - vpn-net  # Alleen zichtbaar via VPN
+      - met24-network
+
+  # Alternative Development version (port 3004)
+  met24-dev-alt:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: met24-mbti-coach-dev-alt
+    ports:
+      - "3004:3000"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:3005
+      - REACT_APP_MCP_BRIDGE_URL=http://localhost:3005
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL:-}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY:-}
+      - REACT_APP_OPENAI_API_KEY=${REACT_APP_OPENAI_API_KEY:-}
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./package.json:/app/package.json
+    restart: unless-stopped
+    profiles:
+      - dev-alt
+    networks:
+      - met24-network
+
+  # Supabase PostgreSQL Database
+  met24-db:
+    image: postgres:15-alpine
+    container_name: met24-supabase-db
+    environment:
+      POSTGRES_DB: met24_mbti_coach
+      POSTGRES_USER: met24user
+      POSTGRES_PASSWORD: met24password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "5434:5432"
+    volumes:
+      - met24_db_data:/var/lib/postgresql/data
+      - ./supabase-migrations:/docker-entrypoint-initdb.d
+      - ./MET24_SUPABASE_V14_SAFE_CAST_FULL_FIXED.sql:/docker-entrypoint-initdb.d/00_init.sql
+    restart: unless-stopped
+    profiles:
+      - database
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U met24user -d met24_mbti_coach"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - met24-network
+
+
+  # Redis for caching and session management
+  met24-redis:
+    image: redis:7-alpine
+    container_name: met24-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - met24_redis_data:/data
+    restart: unless-stopped
+    profiles:
+      - cache
+      - mcp
+      - orchestrator
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - met24-network
+
+  # Nginx reverse proxy (optional)
+  met24-proxy:
+    image: nginx:alpine
+    container_name: met24-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx-proxy.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    restart: unless-stopped
+    profiles:
+      - proxy
+    depends_on:
+      - met24-app
+    networks:
+      - met24-network
+
+  # WireGuard VPN Service (Legacy)
+  vpn:
+    image: linuxserver/wireguard
+    container_name: met24-vpn
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    volumes:
+      - ./vpn-config:/config
+      - /lib/modules:/lib/modules:ro
+    ports:
+      - "51820:51820/udp"  # WireGuard poort
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Amsterdam
+      - SERVERURL=auto
+      - SERVERPORT=51820
+      - PEERS=1
+      - PEERDNS=auto
+      - INTERNAL_SUBNET=10.13.13.0
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    profiles:
+      - vpn
+    networks:
+      - met24-network
+
+  # Tailscale VPN Service (Modern Alternative)
+  tailscale:
+    image: tailscale/tailscale:latest
+    container_name: met24-tailscale
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - /dev/net/tun:/dev/net/tun
+      - ./tailscale-config:/var/lib/tailscale
+    restart: unless-stopped
+    environment:
+      - TS_AUTHKEY=${TAILSCALE_AUTHKEY:-}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+      - TS_ROUTES=10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+    profiles:
+      - tailscale
+    networks:
+      - vpn-net
+      - met24-network
+
+  # VPN Pipeline Service - NIEUW
+  vpn-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: met24-vpn-pipeline
+    ports:
+      - "3003:3000"
+    environment:
+      - NODE_ENV=development
+      - VPN_ENABLED=true
+      - VPN_REQUIRED=true
+      - VPN_CHECK_INTERVAL=30000
+      - VPN_TIMEOUT=10000
+      - TAILSCALE_ENABLED=true
+      - WIREGUARD_ENABLED=true
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL:-}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY:-}
+      - REACT_APP_OPENAI_API_KEY=${REACT_APP_OPENAI_API_KEY:-}
+    volumes:
+      - ./src:/app/src
+      - ./vpn-config:/app/vpn-config
+      - ./tailscale-config:/app/tailscale-config
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - met24-db
+      - tailscale
+      - vpn
+    profiles:
+      - vpn-pipeline
+    networks:
+      - vpn-net
+      - met24-network
+
+  # N8N Workflow Automation
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: met24-n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=met24-n8n-strong-password-2024
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+      - SUPABASE_URL=${REACT_APP_SUPABASE_URL:-}
+      - SUPABASE_KEY=${REACT_APP_SUPABASE_ANON_KEY:-}
+      - OPENAI_API_KEY=${REACT_APP_OPENAI_API_KEY:-}
+      - MCP_BRIDGE_URL=http://localhost:3001
+    volumes:
+      - n8n_data:/home/node/.n8n
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - vpn
+    profiles:
+      - n8n
+    networks:
+      - met24-network
+
+volumes:
+  met24_db_data:
+    driver: local
+  met24_redis_data:
+    driver: local
+  n8n_data:
+    driver: local
+
+networks:
+  met24-network:
+    driver: bridge
+  vpn-net:
+    driver: bridge
+    internal: true  # Alleen intern verkeer - geen internet toegang
+

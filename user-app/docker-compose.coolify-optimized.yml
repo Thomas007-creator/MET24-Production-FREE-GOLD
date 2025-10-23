@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # MET2.4 User App - Production (Coolify Optimized)
+  met24-user-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    container_name: met24-user-app
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_NODE_ENV=production
+      - REACT_APP_BUILD_TARGET=coolify
+      - REACT_APP_API_URL=${REACT_APP_API_URL:-https://www.your-future-self.app/api}
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY}
+      - REACT_APP_MCP_BRIDGE_URL=${REACT_APP_MCP_BRIDGE_URL:-https://mcp.your-future-self.app}
+      - SERVICE_URL_MET24_MCP_BRIDGE=${SERVICE_URL_MET24_MCP_BRIDGE:-https://mcp.your-future-self.app}
+      - SERVICE_URL_MET24_USER_APP=${SERVICE_URL_MET24_USER_APP:-https://www.your-future-self.app}
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
+      - VAPID_EMAIL=${VAPID_EMAIL:-mailto:osteomedica.utrecht@gmail.com}
+      - SSL_EMAIL=${SSL_EMAIL:-osteomedica.utrecht@gmail.com}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - coolify
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.user-app.rule=Host(`www.your-future-self.app`)"
+      - "traefik.http.routers.user-app.entrypoints=websecure"
+      - "traefik.http.routers.user-app.tls.certresolver=letsencrypt"
+      - "traefik.http.services.user-app.loadbalancer.server.port=80"
+      # HTTP to HTTPS redirect
+      - "traefik.http.routers.user-app-http.rule=Host(`www.your-future-self.app`)"
+      - "traefik.http.routers.user-app-http.entrypoints=web"
+      - "traefik.http.routers.user-app-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+  # MCP Bridge - Production (Coolify Optimized with subdomain)
+  met24-mcp-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcp-bridge
+    container_name: met24-mcp-bridge
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_NODE_ENV=production
+      - REACT_APP_API_URL=${REACT_APP_API_URL:-https://www.your-future-self.app/api}
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY}
+      - SERVICE_URL_MET24_MCP_BRIDGE=${SERVICE_URL_MET24_MCP_BRIDGE:-https://mcp.your-future-self.app}
+      - SERVICE_URL_MET24_USER_APP=${SERVICE_URL_MET24_USER_APP:-https://www.your-future-self.app}
+      - MCP_API_KEY=${MCP_API_KEY}
+      - GROK_API_KEY=${GROK_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
+      - VAPID_EMAIL=${VAPID_EMAIL:-mailto:osteomedica.utrecht@gmail.com}
+      - SSL_EMAIL=${SSL_EMAIL:-osteomedica.utrecht@gmail.com}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - coolify
+    labels:
+      - "traefik.enable=true"
+      # Option 1: Subdomain (recommended)
+      - "traefik.http.routers.mcp-bridge.rule=Host(`mcp.your-future-self.app`)"
+      - "traefik.http.routers.mcp-bridge.entrypoints=websecure"
+      - "traefik.http.routers.mcp-bridge.tls.certresolver=letsencrypt"
+      - "traefik.http.services.mcp-bridge.loadbalancer.server.port=3001"
+      # HTTP to HTTPS redirect for MCP
+      - "traefik.http.routers.mcp-bridge-http.rule=Host(`mcp.your-future-self.app`)"
+      - "traefik.http.routers.mcp-bridge-http.entrypoints=web"
+      - "traefik.http.routers.mcp-bridge-http.middlewares=redirect-to-https"
+
+networks:
+  coolify:
+    external: true

@@ -3,10 +3,13 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
 # Production builds
 build/
 dist/
+out/
+.next/
 
 # Environment variables
 .env
@@ -15,11 +18,12 @@ dist/
 .env.test.local
 .env.production.local
 
-# IDE files
+# IDE and editor files
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
 # OS generated files
 .DS_Store
@@ -31,16 +35,43 @@ ehthumbs.db
 Thumbs.db
 
 # Logs
-logs
+logs/
 *.log
 
-# Cache
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Cache directories
 .cache/
 .parcel-cache/
+.eslintcache
 
 # Temporary files
 *.tmp
 *.temp
+temp/
+tmp/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.backup
+*.bak
 
 # Large binary files
 *.node
+
+# Package manager lock files (keep for reproducible builds)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml

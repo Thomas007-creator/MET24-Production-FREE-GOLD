@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  met24-user-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.minimal
+    container_name: met24-user-app
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_SUPABASE_URL=${REACT_APP_SUPABASE_URL}
+      - REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - coolify
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.user-app.rule=Host(`www.your-future-self.app`)"
+      - "traefik.http.routers.user-app.entrypoints=websecure"
+      - "traefik.http.routers.user-app.tls.certresolver=letsencrypt"
+      - "traefik.http.services.user-app.loadbalancer.server.port=80"
+
+networks:
+  coolify:
+    external: true

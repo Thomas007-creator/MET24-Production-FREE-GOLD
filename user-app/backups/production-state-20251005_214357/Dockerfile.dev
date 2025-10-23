@@ -1,0 +1,53 @@
+# =====================================================
+# MET2.4 Development App Dockerfile
+# 
+# Voor DigitalOcean Development Droplet
+# Inclusief development tools en pre-load management
+# 
+# @version 1.0.0
+# @author Thomas
+# =====================================================
+
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apk add --no-cache \
+    curl \
+    jq \
+    rsync \
+    git \
+    openssh-client
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies (including dev dependencies for build)
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Create necessary directories
+RUN mkdir -p /opt/preloads /opt/logs /opt/content
+
+# Set permissions
+RUN chown -R node:node /opt/preloads /opt/logs /opt/content
+
+# Switch to non-root user
+USER node
+
+# Expose port
+EXPOSE 3002
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3002/api/health || exit 1
+
+# Start the application
+CMD ["npm", "start"]

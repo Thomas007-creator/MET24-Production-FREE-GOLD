@@ -1,0 +1,23 @@
+{
+  "backup_date": "20251005_214413",
+  "project_name": "MET24-Production",
+  "version": "1.0.0",
+  "features": {
+    "languages": ["nl", "en", "de", "es", "fr", "ja", "ko"],
+    "database": "WatermelonDB V14",
+    "ui_framework": "NextUI v2.6.11",
+    "deployment": "Coolify + DigitalOcean",
+    "community": "Discourse Integration",
+    "testing": "Jest + React Testing Library"
+  },
+  "last_successful_tests": {
+    "i18n_tests": "9/9 passing",
+    "test_date": "20251005_214413"
+  },
+  "architecture": {
+    "frontend": "React 18 + TypeScript PWA",
+    "database": "WatermelonDB + Supabase",
+    "deployment": "Docker + Traefik + SSL",
+    "services": ["User App (3000)", "MCP Bridge (3001)", "Discourse", "PostgreSQL", "Redis"]
+  }
+}
