@@ -1,0 +1,151 @@
+{
+  "common": {
+    "welcome": "Welkom terug, {{userName}}!",
+    "loading": "Laden...",
+    "error": "Er is een fout opgetreden",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "continue": "Doorgaan",
+    "back": "Terug",
+    "next": "Volgende",
+    "home": "Hoofdmenu",
+    "settings": "Instellingen"
+  },
+  "navigation": {
+    "chat": "Chat",
+    "communities": "Community's",
+    "challenges": "Challenges", 
+    "analytics": "Analytics",
+    "profile": "Profiel",
+    "wellness": "Welzijn",
+    "ai": "AI Coaching"
+  },
+  "mbti": {
+    "types": {
+      "INTJ": {
+        "title": "INTJ — De Strategische Visionair",
+        "description": "Analytisch, toekomstgericht en onafhankelijk",
+        "summary": "Strategisch, innovatief, vastberaden"
+      },
+      "ENFP": {
+        "title": "ENFP — De Enthousiaste Champion", 
+        "description": "Energiek, creatief en mensen-gericht",
+        "summary": "Enthousiast, creatief, inspirerend"
+      },
+      "ISFJ": {
+        "title": "ISFJ — De Zorgzame Beschermer",
+        "description": "Zorgzaam, betrouwbaar en ondersteunend", 
+        "summary": "Zorgzaam, loyaal, praktisch"
+      },
+      "ESTP": {
+        "title": "ESTP — De Energieke Ondernemer",
+        "description": "Spontaan, energiek en actiegericht",
+        "summary": "Spontaan, praktisch, flexibel"
+      }
+    }
+  },
+  "community": {
+    "title": "👥 MBTI Community's",
+    "welcome": "Welkom {{userName}}! Verbind met andere {{mbtiType}} types en deel je inzichten",
+    "live_platform": "🚀 Live Community Platform",
+    "live_description": "Chat, deel en leer van de volledige MET24 community via ons Discourse platform",
+    "real_time": "Real-time chat",
+    "buttons": {
+      "mbti_chat": "💬 {{mbtiType}} Chat",
+      "all_communities": "👥 Alle Communities", 
+      "challenges": "🎯 Challenges"
+    },
+    "integration_notice": "🔗 Naadloos geïntegreerd: Je MET24 profiel en voortgang zijn automatisch gekoppeld"
+  },
+  "discourse": {
+    "chat": {
+      "title": "💬 {{mbtiType}} Live Chat",
+      "description": "Connect met andere {{mbtiType}} types"
+    },
+    "communities": {
+      "title": "👥 Alle Community's",
+      "description": "Ontdek alle MBTI communities"
+    },
+    "challenges": {
+      "title": "🎯 Dagelijkse Challenges", 
+      "description": "Doe mee met community challenges"
+    }
+  },
+  "onboarding": {
+    "welcome": "Welkom bij MET24",
+    "steps": {
+      "personal_info": "Persoonlijke Informatie",
+      "mbti_test": "MBTI Persoonlijkheidstest",
+      "wellness": "Welzijn Assessment",
+      "ai_coaching": "AI Coaching Setup",
+      "complete": "Onboarding Voltooid"
+    },
+    "mbti_questions": {
+      "intro": "Beantwoord deze vragen om je MBTI type te bepalen",
+      "question_1": "Ik laad het liefst op door alleen tijd door te brengen.",
+      "question_2": "Ik let meer op feiten en details dan op patronen en mogelijkheden.",
+      "question_3": "Beslissingen neem ik meestal op basis van logica in plaats van gevoel.",
+      "question_4": "Ik plan graag dingen en houd van structuur.",
+      "question_5": "Ik voel me energieker na het ontmoeten van nieuwe mensen.",
+      "question_6": "Ik vertrouw op intuïtie om toekomstmogelijkheden te zien.",
+      "question_7": "In discussies zoek ik naar de waarheid, zelfs als het ongemakkelijk is.",
+      "question_8": "Ik vind flexibiliteit en ruimte belangrijker dan strakke planning.",
+      "question_9": "Ik merk vaak details op die anderen missen.",
+      "question_10": "Ik stel mijn gevoelens en waarden mee laten wegen bij beslissingen."
+    },
+    "likert_scale": {
+      "strongly_disagree": "Helemaal oneens",
+      "disagree": "Oneens", 
+      "neutral": "Neutraal",
+      "agree": "Eens",
+      "strongly_agree": "Helemaal eens"
+    }
+  },
+  "wellness": {
+    "title": "🏥 Holistisch Welzijn",
+    "questions": {
+      "sleep": "Hoe regelmatig slaap je voldoende?",
+      "fatigue": "Hoe vaak heb je last van vermoeidheid overdag?",
+      "exercise": "Hoe vaak beweeg je matig/intensief per week?",
+      "stress": "Hoe goed kun je je emoties reguleren in stress?",
+      "meaning": "Hoe vaak ervaar je zingeving in dagelijkse activiteiten?",
+      "social_support": "Hoeveel sociale steun ervaar je?",
+      "physical_complaints": "Hoe vaak ervaar je lichamelijke klachten die functioneren beïnvloeden?",
+      "goal_oriented": "Hoe vaak handel je doelgericht?"
+    }
+  },
+  "ai_coaching": {
+    "title": "🤖 AI Coaching",
+    "description": "Persoonlijke AI coaching aangepast aan jouw {{mbtiType}} type",
+    "session_frequency": "Hoe vaak wil je AI coaching sessies?",
+    "frequencies": {
+      "daily": "Dagelijks",
+      "weekly": "Wekelijks", 
+      "as_needed": "Op verzoek"
+    },
+    "goals": {
+      "self_awareness": "Zelfbewustzijn",
+      "stress_management": "Stress Management",
+      "goal_achievement": "Doelbereiking",
+      "relationship_skills": "Relatievaardigheden"
+    }
+  },
+  "settings": {
+    "title": "⚙️ Instellingen",
+    "language": "Taal",
+    "theme": "Thema",
+    "notifications": "Notificaties",
+    "privacy": "Privacy",
+    "languages": {
+      "nl": "Nederlands",
+      "en": "English",
+      "de": "Deutsch", 
+      "fr": "Français"
+    },
+    "themes": {
+      "light": "Licht",
+      "dark": "Donker",
+      "auto": "Automatisch"
+    }
+  }
+}

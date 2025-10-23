@@ -1,0 +1,152 @@
+{
+  "common": {
+    "welcome": "Bienvenue {{userName}} !",
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "continue": "Continuer",
+    "back": "Retour",
+    "next": "Suivant",
+    "home": "Accueil",
+    "settings": "Paramètres"
+  },
+  "navigation": {
+    "chat": "Chat",
+    "communities": "Communautés",
+    "challenges": "Défis",
+    "analytics": "Analyses",
+    "profile": "Profil",
+    "wellness": "Bien-être",
+    "ai": "Coaching IA"
+  },
+  "mbti": {
+    "types": {
+      "INTJ": {
+        "title": "INTJ — Le Visionnaire Stratégique",
+        "description": "Analytique, orienté vers l'avenir et indépendant",
+        "summary": "Stratégique, innovant, déterminé"
+      },
+      "ENFP": {
+        "title": "ENFP — Le Champion Enthousiaste",
+        "description": "Énergique, créatif et orienté vers les gens",
+        "summary": "Enthousiaste, créatif, inspirant"
+      },
+      "ISFJ": {
+        "title": "ISFJ — Le Protecteur Bienveillant",
+        "description": "Bienveillant, fiable et de soutien",
+        "summary": "Bienveillant, loyal, pratique"
+      },
+      "ESTP": {
+        "title": "ESTP — L'Entrepreneur Énergique",
+        "description": "Spontané, énergique et orienté vers l'action",
+        "summary": "Spontané, pratique, flexible"
+      }
+    }
+  },
+  "community": {
+    "title": "👥 Communautés MBTI",
+    "welcome": "Bienvenue {{userName}} ! Connecte-toi avec d'autres types {{mbtiType}} et partage tes idées",
+    "live_platform": "🚀 Plateforme Communautaire Live",
+    "live_description": "Discute, partage et apprends de toute la communauté MET24 via notre plateforme Discourse",
+    "real_time": "Chat en temps réel",
+    "buttons": {
+      "mbti_chat": "💬 Chat {{mbtiType}}",
+      "all_communities": "👥 Toutes les Communautés",
+      "challenges": "🎯 Défis"
+    },
+    "integration_notice": "🔗 Parfaitement intégré : Ton profil et tes progrès MET24 sont automatiquement liés"
+  },
+  "discourse": {
+    "chat": {
+      "title": "💬 Chat Live {{mbtiType}}",
+      "description": "Connecte-toi avec d'autres types {{mbtiType}}"
+    },
+    "communities": {
+      "title": "👥 Toutes les Communautés",
+      "description": "Découvre toutes les communautés MBTI"
+    },
+    "challenges": {
+      "title": "🎯 Défis Quotidiens",
+      "description": "Rejoins les défis de la communauté"
+    }
+  },
+  "onboarding": {
+    "welcome": "Bienvenue dans MET24",
+    "steps": {
+      "personal_info": "Informations Personnelles",
+      "mbti_test": "Test de Personnalité MBTI",
+      "wellness": "Évaluation du Bien-être",
+      "ai_coaching": "Configuration du Coaching IA",
+      "complete": "Intégration Terminée"
+    },
+    "mbti_questions": {
+      "intro": "Réponds à ces questions pour déterminer ton type MBTI",
+      "question_1": "Je préfère me ressourcer en passant du temps seul.",
+      "question_2": "Je me concentre plus sur les faits et les détails que sur les motifs et les possibilités.",
+      "question_3": "Je prends généralement des décisions basées sur la logique plutôt que sur les sentiments.",
+      "question_4": "J'aime planifier les choses et je préfère la structure.",
+      "question_5": "Je me sens plus énergisé après avoir rencontré de nouvelles personnes.",
+      "question_6": "Je fais confiance à l'intuition pour voir les possibilités futures.",
+      "question_7": "Dans les discussions, je cherche la vérité même si c'est inconfortable.",
+      "question_8": "La flexibilité et l'ouverture sont plus importantes pour moi qu'une planification stricte.",
+      "question_9": "Je remarque souvent des détails que les autres ratent.",
+      "question_10": "Je laisse mes sentiments et mes valeurs influencer mes décisions."
+    },
+    "likert_scale": {
+      "strongly_disagree": "Pas du tout d'accord",
+      "disagree": "Pas d'accord",
+      "neutral": "Neutre",
+      "agree": "D'accord",
+      "strongly_agree": "Tout à fait d'accord"
+    }
+  },
+  "wellness": {
+    "title": "🏥 Bien-être Holistique",
+    "questions": {
+      "sleep": "À quelle fréquence dors-tu suffisamment ?",
+      "fatigue": "À quelle fréquence ressens-tu de la fatigue pendant la journée ?",
+      "exercise": "À quelle fréquence fais-tu de l'exercice modéré/intense par semaine ?",
+      "stress": "À quel point peux-tu bien réguler tes émotions sous stress ?",
+      "meaning": "À quelle fréquence ressens-tu du sens dans les activités quotidiennes ?",
+      "social_support": "Combien de soutien social ressens-tu ?",
+      "physical_complaints": "À quelle fréquence ressens-tu des plaintes physiques qui affectent le fonctionnement ?",
+      "goal_oriented": "À quelle fréquence agis-tu de manière orientée vers les objectifs ?"
+    }
+  },
+  "ai_coaching": {
+    "title": "🤖 Coaching IA",
+    "description": "Coaching IA personnel adapté à ton type {{mbtiType}}",
+    "session_frequency": "À quelle fréquence aimerais-tu des sessions de coaching IA ?",
+    "frequencies": {
+      "daily": "Quotidiennement",
+      "weekly": "Hebdomadairement",
+      "as_needed": "Sur demande"
+    },
+    "goals": {
+      "self_awareness": "Conscience de soi",
+      "stress_management": "Gestion du stress",
+      "goal_achievement": "Réalisation d'objectifs",
+      "relationship_skills": "Compétences relationnelles"
+    }
+  },
+  "settings": {
+    "title": "⚙️ Paramètres",
+    "language": "Langue",
+    "theme": "Thème",
+    "notifications": "Notifications",
+    "privacy": "Confidentialité",
+    "languages": {
+      "nl": "Nederlands",
+      "en": "English",
+      "de": "Deutsch",
+      "es": "Español",
+      "fr": "Français"
+    },
+    "themes": {
+      "light": "Clair",
+      "dark": "Sombre",
+      "auto": "Automatique"
+    }
+  }
+}

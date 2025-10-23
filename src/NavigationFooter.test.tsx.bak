@@ -1,0 +1,436 @@
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import {
+  NavigationFooter,
+  NavigationFooterProvider,
+  useNavigationFooter,
+  GlassFooter,
+  SolidFooter,
+  BaseNavigationItem,
+  PrimaryNavigationItem,
+  SecondaryNavigationItem,
+  GhostNavigationItem,
+  ActiveNavigationItem,
+  DisabledNavigationItem,
+  SmallNavigationItem,
+  MediumNavigationItem,
+  LargeNavigationItem,
+} from './NavigationFooter.refactored';
+import { Heart, Star, Home } from 'lucide-react';
+
+// Mock Lucide icons
+jest.mock('lucide-react', () => ({
+  Heart: () => <div data-testid="heart-icon">Heart</div>,
+  Star: () => <div data-testid="star-icon">Star</div>,
+  Home: () => <div data-testid="home-icon">Home</div>,
+}));
+
+describe('NavigationFooter Composition Architecture', () => {
+  describe('Provider Pattern', () => {
+    it('provides context to child components', () => {
+      const TestComponent = () => {
+        const context = useNavigationFooter();
+        return <div data-testid="context-value">{JSON.stringify(context)}</div>;
+      };
+
+      render(
+        <NavigationFooterProvider
+          variant="vertical"
+          size="lg"
+          showLabels={false}
+          glassmorphism={false}
+        >
+          <TestComponent />
+        </NavigationFooterProvider>
+      );
+
+      const contextValue = JSON.parse(screen.getByTestId('context-value').textContent || '{}');
+      expect(contextValue).toEqual({
+        variant: 'vertical',
+        size: 'lg',
+        showLabels: false,
+        glassmorphism: false,
+      });
+    });
+
+    it('throws error when useNavigationFooter is used outside provider', () => {
+      const TestComponent = () => {
+        useNavigationFooter();
+        return <div>Test</div>;
+      };
+
+      expect(() => render(<TestComponent />)).toThrow(
+        'useNavigationFooter must be used within NavigationFooterProvider'
+      );
+    });
+  });
+
+  describe('Footer Components', () => {
+    it('GlassFooter applies glassmorphism styling', () => {
+      render(
+        <NavigationFooterProvider>
+          <GlassFooter>
+            <div>Test Content</div>
+          </GlassFooter>
+        </NavigationFooterProvider>
+      );
+
+      const nav = screen.getByRole('navigation');
+      expect(nav).toHaveClass('bg-[rgba(27,38,59,0.5)]', 'backdrop-blur-xl');
+    });
+
+    it('SolidFooter applies solid styling', () => {
+      render(
+        <NavigationFooterProvider>
+          <SolidFooter>
+            <div>Test Content</div>
+          </SolidFooter>
+        </NavigationFooterProvider>
+      );
+
+      const nav = screen.getByRole('navigation');
+      expect(nav).toHaveClass('bg-[#1b263b]');
+      expect(nav).not.toHaveClass('backdrop-blur-xl');
+    });
+
+    it('supports horizontal and vertical variants', () => {
+      const { rerender } = render(
+        <NavigationFooterProvider variant="horizontal">
+          <GlassFooter>Test</GlassFooter>
+        </NavigationFooterProvider>
+      );
+
+      expect(screen.getByRole('navigation')).toHaveClass('flex', 'items-center', 'justify-around');
+
+      rerender(
+        <NavigationFooterProvider variant="vertical">
+          <GlassFooter>Test</GlassFooter>
+        </NavigationFooterProvider>
+      );
+
+      expect(screen.getByRole('navigation')).toHaveClass('flex', 'flex-col', 'space-y-2');
+    });
+  });
+
+  describe('BaseNavigationItem Component', () => {
+    it('renders with default context values', () => {
+      render(
+        <NavigationFooterProvider>
+          <BaseNavigationItem icon={Heart} onClick={() => {}}>
+            Test Label
+          </BaseNavigationItem>
+        </NavigationFooterProvider>
+      );
+
+      const button = screen.getByRole('button');
+      expect(button).toBeInTheDocument();
+      expect(button).toHaveTextContent('Test Label');
+      expect(screen.getByTestId('heart-icon')).toBeInTheDocument();
+    });
+
+    it('applies size classes correctly', () => {
+      render(
+        <NavigationFooterProvider size="sm">
+          <BaseNavigationItem icon={Heart} onClick={() => {}}>
+            Small
+          </BaseNavigationItem>
+        </NavigationFooterProvider>
+      );
+
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('p-2', 'text-xs');
+    });
+
+    it('handles active state styling', () => {
+      render(
+        <NavigationFooterProvider>
+          <BaseNavigationItem icon={Heart} onClick={() => {}} active={true}>
+            Active
+          </BaseNavigationItem>
+        </NavigationFooterProvider>
+      );
+
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('bg-[rgba(100,223,223,0.2)]', 'text-[#64dfdf]');
+    });
+
+    it('handles disabled state', () => {
+      render(
+        <NavigationFooterProvider>
+          <BaseNavigationItem icon={Heart} onClick={() => {}} disabled={true}>
+            Disabled
+          </BaseNavigationItem>
+        </NavigationFooterProvider>
+      );
+
+      const button = screen.getByRole('button');
+      expect(button).toBeDisabled();
+      expect(button).toHaveClass('opacity-50', 'cursor-not-allowed');
+    });
+
+    it('applies variant classes correctly', () => {
+      render(
+        <NavigationFooterProvider>
+          <BaseNavigationItem icon={Heart} onClick={() => {}} variant="secondary">
+            Secondary
+          </BaseNavigationItem>
+        </NavigationFooterProvider>
+      );
+
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('text-[#e0e0e0]');
+    });
+
+    it('respects showLabels setting', () => {
+      const { rerender } = render(
+        <NavigationFooterProvider showLabels={true}>
+          <BaseNavigationItem icon={Heart} onClick={() => {}}>
+            Label
+          </BaseNavigationItem>
+        </NavigationFooterProvider>
+      );
+
+      expect(screen.getByRole('button')).toHaveTextContent('Label');
+
+      rerender(
+        <NavigationFooterProvider showLabels={false}>
+          <BaseNavigationItem icon={Heart} onClick={() => {}}>
+            Hidden Label
+          </BaseNavigationItem>
+        </NavigationFooterProvider>
+      );
+
+      expect(screen.getByRole('button')).not.toHaveTextContent('Hidden Label');
+    });
+
+    it('handles click events', () => {
+      const handleClick = jest.fn();
+      render(
+        <NavigationFooterProvider>
+          <BaseNavigationItem icon={Heart} onClick={handleClick}>
+            Clickable
+          </BaseNavigationItem>
+        </NavigationFooterProvider>
+      );
+
+      fireEvent.click(screen.getByRole('button'));
+      expect(handleClick).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Discrete Item Components', () => {
+    const variants = [
+      { Component: PrimaryNavigationItem, expectedClass: 'text-[#e0e0e0]' },
+      { Component: SecondaryNavigationItem, expectedClass: 'text-[#e0e0e0]' },
+      { Component: GhostNavigationItem, expectedClass: 'text-[#e0e0e0]' },
+    ];
+
+    variants.forEach(({ Component, expectedClass }) => {
+      it(`${Component.name} applies correct variant styling`, () => {
+        render(<Component icon={Heart} onClick={() => {}} label="Test" />);
+
+        const button = screen.getByRole('button');
+        expect(button).toHaveClass(expectedClass);
+        expect(button).toHaveTextContent('Test');
+        expect(screen.getByTestId('heart-icon')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('State Variant Components', () => {
+    it('ActiveNavigationItem applies active styling', () => {
+      render(<ActiveNavigationItem icon={Heart} onClick={() => {}} label="Active" />);
+
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('bg-[rgba(100,223,223,0.2)]', 'text-[#64dfdf]');
+    });
+
+    it('DisabledNavigationItem applies disabled styling', () => {
+      render(<DisabledNavigationItem icon={Heart} onClick={() => {}} label="Disabled" />);
+
+      const button = screen.getByRole('button');
+      expect(button).toBeDisabled();
+      expect(button).toHaveClass('opacity-50');
+    });
+  });
+
+  describe('Size Variant Components', () => {
+    const sizes = [
+      { Component: SmallNavigationItem, expectedClasses: ['p-2', 'text-xs'] },
+      { Component: MediumNavigationItem, expectedClasses: ['p-3', 'text-sm'] },
+      { Component: LargeNavigationItem, expectedClasses: ['p-4', 'text-base'] },
+    ];
+
+    sizes.forEach(({ Component, expectedClasses }) => {
+      it(`${Component.name} applies correct size styling`, () => {
+        render(<Component icon={Heart} onClick={() => {}} label="Test" />);
+
+        const button = screen.getByRole('button');
+        expectedClasses.forEach(className => {
+          expect(button).toHaveClass(className);
+        });
+        expect(screen.getByTestId('heart-icon')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Backwards Compatibility Layer', () => {
+    const mockItems = [
+      {
+        label: 'Home',
+        icon: Home,
+        onClick: jest.fn(),
+        active: true,
+        variant: 'primary' as const,
+      },
+      {
+        label: 'Favorites',
+        icon: Heart,
+        onClick: jest.fn(),
+        disabled: true,
+        variant: 'secondary' as const,
+      },
+    ];
+
+    it('maintains original NavigationFooter API', () => {
+      render(<NavigationFooter items={mockItems} />);
+
+      const buttons = screen.getAllByRole('button');
+      expect(buttons).toHaveLength(2);
+      expect(buttons[0]).toHaveTextContent('Home');
+      expect(buttons[1]).toHaveTextContent('Favorites');
+    });
+
+    it('supports glassmorphism boolean prop', () => {
+      const { rerender } = render(<NavigationFooter items={mockItems} glassmorphism={true} />);
+
+      expect(screen.getByRole('navigation')).toHaveClass('backdrop-blur-xl');
+
+      rerender(<NavigationFooter items={mockItems} glassmorphism={false} />);
+
+      expect(screen.getByRole('navigation')).not.toHaveClass('backdrop-blur-xl');
+    });
+
+    it('supports showLabels boolean prop', () => {
+      const { rerender } = render(<NavigationFooter items={mockItems} showLabels={true} />);
+
+      expect(screen.getAllByRole('button')[0]).toHaveTextContent('Home');
+
+      rerender(<NavigationFooter items={mockItems} showLabels={false} />);
+
+      expect(screen.getAllByRole('button')[0]).not.toHaveTextContent('Home');
+    });
+
+    it('supports variant and size props', () => {
+      render(
+        <NavigationFooter
+          items={mockItems}
+          variant="vertical"
+          size="lg"
+        />
+      );
+
+      const nav = screen.getByRole('navigation');
+      expect(nav).toHaveClass('flex-col', 'space-y-2');
+
+      const buttons = screen.getAllByRole('button');
+      expect(buttons[0]).toHaveClass('p-4', 'text-base');
+    });
+
+    it('handles item interactions correctly', () => {
+      render(<NavigationFooter items={mockItems} />);
+
+      const buttons = screen.getAllByRole('button');
+      fireEvent.click(buttons[0]);
+      expect(mockItems[0].onClick).toHaveBeenCalledTimes(1);
+
+      // Disabled button should not trigger click
+      fireEvent.click(buttons[1]);
+      expect(mockItems[1].onClick).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Composition Patterns', () => {
+    it('allows nested provider override', () => {
+      render(
+        <NavigationFooterProvider variant="horizontal" size="md">
+          <GlassFooter>
+            <PrimaryNavigationItem icon={Heart} onClick={() => {}} label="Outer" />
+            <NavigationFooterProvider variant="vertical" size="lg">
+              <SolidFooter>
+                <SecondaryNavigationItem icon={Star} onClick={() => {}} label="Inner" />
+              </SolidFooter>
+            </NavigationFooterProvider>
+          </GlassFooter>
+        </NavigationFooterProvider>
+      );
+
+      const navs = screen.getAllByRole('navigation');
+      expect(navs[0]).toHaveClass('backdrop-blur-xl'); // GlassFooter
+      expect(navs[1]).toHaveClass('bg-[#1b263b]'); // SolidFooter
+
+      const buttons = screen.getAllByRole('button');
+      expect(buttons[0]).toHaveClass('p-3'); // Medium size
+      expect(buttons[1]).toHaveClass('p-4'); // Large size
+    });
+
+    it('supports complex item composition', () => {
+      render(
+        <NavigationFooterProvider showLabels={true}>
+          <GlassFooter>
+            <ActiveNavigationItem icon={Heart} onClick={() => {}} label="Active Item" />
+            <DisabledNavigationItem icon={Star} onClick={() => {}} label="Disabled Item" />
+          </GlassFooter>
+        </NavigationFooterProvider>
+      );
+
+      const buttons = screen.getAllByRole('button');
+      expect(buttons[0]).toHaveClass('bg-[rgba(100,223,223,0.2)]'); // Active
+      expect(buttons[1]).toBeDisabled(); // Disabled
+      expect(buttons[0]).toHaveTextContent('Active Item');
+      expect(buttons[1]).toHaveTextContent('Disabled Item');
+    });
+  });
+
+  describe('Error Boundaries & Edge Cases', () => {
+    it('handles empty items array', () => {
+      render(<NavigationFooter items={[]} />);
+
+      const nav = screen.getByRole('navigation');
+      expect(nav).toBeInTheDocument();
+      expect(nav.children).toHaveLength(0);
+    });
+
+    it('handles items without labels', () => {
+      const itemsWithoutLabels = [
+        {
+          label: '',
+          icon: Heart,
+          onClick: () => {},
+        },
+      ];
+
+      render(<NavigationFooter items={itemsWithoutLabels} />);
+
+      const button = screen.getByRole('button');
+      expect(button).not.toHaveTextContent('');
+    });
+
+    it('handles undefined variant gracefully', () => {
+      const itemsWithUndefinedVariant = [
+        {
+          label: 'Test',
+          icon: Heart,
+          onClick: () => {},
+          variant: undefined,
+        },
+      ];
+
+      render(<NavigationFooter items={itemsWithUndefinedVariant} />);
+
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass('text-[#e0e0e0]'); // Default primary variant
+    });
+  });
+});

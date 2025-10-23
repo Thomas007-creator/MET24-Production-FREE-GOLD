@@ -1,0 +1,458 @@
+/**
+ * AI Artifacts Management Service
+ * 
+ * Beheert AI content tracking, loading en synchronisatie
+ * Integreert met Enhanced AI System in Supabase
+ * 
+ * @version 1.0.0
+ * @author Thomas
+ */
+
+import database from '../database/v14/databaseV14';
+import AIArtifacts from '../database/models/AIArtifacts';
+import { supabase } from '../config/supabase';
+import { logger } from '../utils/logger';
+
+export interface AIArtifactFilter {
+  mbtiType?: string;
+  agent?: string;
+  moderationStatus?: string;
+  qualityScore?: number;
+  dateRange?: {
+    start: Date;
+    end: Date;
+  };
+  limit?: number;
+  offset?: number;
+}
+
+export interface AIArtifactStats {
+  totalArtifacts: number;
+  byMBTIType: Record<string, number>;
+  byAgent: Record<string, number>;
+  byModerationStatus: Record<string, number>;
+  averageQualityScore: number;
+  lastUpdated: Date;
+}
+
+export interface AIArtifactSyncStatus {
+  pendingSync: number;
+  synced: number;
+  failed: number;
+  lastSyncTime: Date | null;
+  syncErrors: string[];
+}
+
+export class AIArtifactsManagementService {
+  private static instance: AIArtifactsManagementService;
+  private syncInProgress = false;
+  private lastSyncTime: Date | null = null;
+
+  private constructor() {}
+
+  public static getInstance(): AIArtifactsManagementService {
+    if (!AIArtifactsManagementService.instance) {
+      AIArtifactsManagementService.instance = new AIArtifactsManagementService();
+    }
+    return AIArtifactsManagementService.instance;
+  }
+
+  /**
+   * Laad AI artifacts met filtering
+   */
+  async loadAIArtifacts(filter: AIArtifactFilter = {}): Promise<AIArtifacts[]> {
+    try {
+      logger.info('🔄 Loading AI artifacts with filter:', filter);
+
+      const query = database.collections.get<AIArtifacts>('ai_artifacts').query();
+
+      // Apply filters
+      if (filter.mbtiType) {
+        query.where('mbti_type', filter.mbtiType);
+      }
+
+      if (filter.agent) {
+        query.where('agent', filter.agent);
+      }
+
+      if (filter.moderationStatus) {
+        query.where('moderation_status', filter.moderationStatus);
+      }
+
+      if (filter.qualityScore) {
+        query.where('quality_score', Q.gte(filter.qualityScore));
+      }
+
+      if (filter.dateRange) {
+        query.where('created_at', Q.between(filter.dateRange.start, filter.dateRange.end));
+      }
+
+      // Apply pagination
+      if (filter.limit) {
+        query.take(filter.limit);
+      }
+
+      if (filter.offset) {
+        query.skip(filter.offset);
+      }
+
+      const artifacts = await query.fetch();
+      logger.info(`✅ Loaded ${artifacts.length} AI artifacts`);
+
+      return artifacts;
+    } catch (error) {
+      logger.error('❌ Failed to load AI artifacts:', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Krijg AI artifact statistieken
+   */
+  async getAIArtifactStats(): Promise<AIArtifactStats> {
+    try {
+      logger.info('📊 Getting AI artifact statistics...');
+
+      const allArtifacts = await database.collections.get<AIArtifacts>('ai_artifacts').query().fetch();
+      
+      const stats: AIArtifactStats = {
+        totalArtifacts: allArtifacts.length,
+        byMBTIType: {},
+        byAgent: {},
+        byModerationStatus: {},
+        averageQualityScore: 0,
+        lastUpdated: new Date()
+      };
+
+      let totalQualityScore = 0;
+      let qualityScoreCount = 0;
+
+      allArtifacts.forEach(artifact => {
+        // MBTI Type distribution
+        if (artifact.mbtiType) {
+          stats.byMBTIType[artifact.mbtiType] = (stats.byMBTIType[artifact.mbtiType] || 0) + 1;
+        }
+
+        // Agent distribution
+        if (artifact.agent) {
+          stats.byAgent[artifact.agent] = (stats.byAgent[artifact.agent] || 0) + 1;
+        }
+
+        // Moderation status distribution
+        if (artifact.moderationStatus) {
+          stats.byModerationStatus[artifact.moderationStatus] = (stats.byModerationStatus[artifact.moderationStatus] || 0) + 1;
+        }
+
+        // Quality score average
+        if (artifact.qualityScore) {
+          totalQualityScore += artifact.qualityScore;
+          qualityScoreCount++;
+        }
+      });
+
+      stats.averageQualityScore = qualityScoreCount > 0 ? totalQualityScore / qualityScoreCount : 0;
+
+      logger.info('✅ AI artifact statistics calculated:', stats);
+      return stats;
+    } catch (error) {
+      logger.error('❌ Failed to get AI artifact statistics:', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Synchroniseer AI artifacts met Supabase
+   */
+  async syncAIArtifacts(): Promise<AIArtifactSyncStatus> {
+    if (this.syncInProgress) {
+      logger.warn('⚠️ AI artifacts sync already in progress');
+      return {
+        pendingSync: 0,
+        synced: 0,
+        failed: 0,
+        lastSyncTime: this.lastSyncTime,
+        syncErrors: ['Sync already in progress']
+      };
+    }
+
+    this.syncInProgress = true;
+    const syncStatus: AIArtifactSyncStatus = {
+      pendingSync: 0,
+      synced: 0,
+      failed: 0,
+      lastSyncTime: null,
+      syncErrors: []
+    };
+
+    try {
+      logger.info('🔄 Starting AI artifacts sync with Supabase...');
+
+      // Get pending sync artifacts
+      const pendingArtifacts = await database.collections.get<AIArtifacts>('ai_artifacts')
+        .query(Q.where('sync_status', 'pending'))
+        .fetch();
+
+      syncStatus.pendingSync = pendingArtifacts.length;
+      logger.info(`📋 Found ${pendingArtifacts.length} artifacts pending sync`);
+
+      // Sync each artifact
+      for (const artifact of pendingArtifacts) {
+        try {
+          await this.syncSingleArtifact(artifact);
+          syncStatus.synced++;
+          logger.info(`✅ Synced artifact ${artifact.id}`);
+        } catch (error) {
+          syncStatus.failed++;
+          syncStatus.syncErrors.push(`Failed to sync artifact ${artifact.id}: ${error.message}`);
+          logger.error(`❌ Failed to sync artifact ${artifact.id}:`, { error });
+        }
+      }
+
+      this.lastSyncTime = new Date();
+      syncStatus.lastSyncTime = this.lastSyncTime;
+
+      logger.info(`✅ AI artifacts sync completed: ${syncStatus.synced} synced, ${syncStatus.failed} failed`);
+      return syncStatus;
+
+    } catch (error) {
+      logger.error('❌ AI artifacts sync failed:', { error });
+      syncStatus.syncErrors.push(`Sync failed: ${error.message}`);
+      return syncStatus;
+    } finally {
+      this.syncInProgress = false;
+    }
+  }
+
+  /**
+   * Synchroniseer een enkele AI artifact
+   */
+  private async syncSingleArtifact(artifact: AIArtifacts): Promise<void> {
+    try {
+      const artifactData = {
+        job_id: artifact.jobId,
+        origin: artifact.origin,
+        agent: artifact.agent,
+        content: artifact.content,
+        provenance: artifact.provenance,
+        moderation_status: artifact.moderationStatus,
+        mbti_type: artifact.mbtiType,
+        user_id: artifact.userId,
+        session_id: artifact.sessionId,
+        quality_score: artifact.qualityScore,
+        tokens_used: artifact.tokensUsed,
+        sync_status: 'synced',
+        last_synced_at: new Date().toISOString(),
+        created_at: artifact.createdAt.toISOString(),
+        updated_at: artifact.updatedAt.toISOString()
+      };
+
+      const { error } = await supabase
+        .from('ai_artifacts')
+        .upsert(artifactData);
+
+      if (error) {
+        throw new Error(`Supabase upsert failed: ${error.message}`);
+      }
+
+      // Update local artifact sync status
+      await database.write(async () => {
+        await artifact.update(artifact => {
+          artifact.syncStatus = 'synced';
+          artifact.lastSyncedAt = new Date();
+          artifact.syncError = null;
+        });
+      });
+
+    } catch (error) {
+      // Update local artifact with error
+      await database.write(async () => {
+        await artifact.update(artifact => {
+          artifact.syncStatus = 'failed';
+          artifact.syncError = error.message;
+        });
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Laad AI artifacts van Supabase naar WatermelonDB
+   */
+  async loadAIArtifactsFromSupabase(filter: AIArtifactFilter = {}): Promise<number> {
+    try {
+      logger.info('🔄 Loading AI artifacts from Supabase...');
+
+      let query = supabase.from('ai_artifacts').select('*');
+
+      // Apply filters
+      if (filter.mbtiType) {
+        query = query.eq('mbti_type', filter.mbtiType);
+      }
+
+      if (filter.agent) {
+        query = query.eq('agent', filter.agent);
+      }
+
+      if (filter.moderationStatus) {
+        query = query.eq('moderation_status', filter.moderationStatus);
+      }
+
+      if (filter.qualityScore) {
+        query = query.gte('quality_score', filter.qualityScore);
+      }
+
+      if (filter.dateRange) {
+        query = query.gte('created_at', filter.dateRange.start.toISOString())
+                     .lte('created_at', filter.dateRange.end.toISOString());
+      }
+
+      if (filter.limit) {
+        query = query.limit(filter.limit);
+      }
+
+      if (filter.offset) {
+        query = query.range(filter.offset, filter.offset + (filter.limit || 100) - 1);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        throw new Error(`Supabase query failed: ${error.message}`);
+      }
+
+      if (!data || data.length === 0) {
+        logger.info('ℹ️ No AI artifacts found in Supabase');
+        return 0;
+      }
+
+      // Store in WatermelonDB
+      let loadedCount = 0;
+      await database.write(async () => {
+        for (const artifactData of data) {
+          try {
+            await database.collections.get<AIArtifacts>('ai_artifacts').create(artifact => {
+              artifact.jobId = artifactData.job_id;
+              artifact.origin = artifactData.origin;
+              artifact.agent = artifactData.agent;
+              artifact.content = artifactData.content;
+              artifact.provenance = artifactData.provenance;
+              artifact.moderationStatus = artifactData.moderation_status;
+              artifact.mbtiType = artifactData.mbti_type;
+              artifact.userId = artifactData.user_id;
+              artifact.sessionId = artifactData.session_id;
+              artifact.qualityScore = artifactData.quality_score;
+              artifact.tokensUsed = artifactData.tokens_used;
+              artifact.syncStatus = 'synced';
+              artifact.lastSyncedAt = new Date(artifactData.last_synced_at);
+              artifact.createdAt = new Date(artifactData.created_at);
+              artifact.updatedAt = new Date(artifactData.updated_at);
+            });
+            loadedCount++;
+          } catch (error) {
+            logger.warn(`⚠️ Failed to create artifact ${artifactData.id}:`, error);
+          }
+        }
+      });
+
+      logger.info(`✅ Loaded ${loadedCount} AI artifacts from Supabase`);
+      return loadedCount;
+
+    } catch (error) {
+      logger.error('❌ Failed to load AI artifacts from Supabase:', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Verwijder AI artifacts
+   */
+  async deleteAIArtifacts(filter: AIArtifactFilter): Promise<number> {
+    try {
+      logger.info('🗑️ Deleting AI artifacts with filter:', filter);
+
+      const query = database.collections.get<AIArtifacts>('ai_artifacts').query();
+
+      // Apply filters
+      if (filter.mbtiType) {
+        query.where('mbti_type', filter.mbtiType);
+      }
+
+      if (filter.agent) {
+        query.where('agent', filter.agent);
+      }
+
+      if (filter.moderationStatus) {
+        query.where('moderation_status', filter.moderationStatus);
+      }
+
+      if (filter.dateRange) {
+        query.where('created_at', Q.between(filter.dateRange.start, filter.dateRange.end));
+      }
+
+      const artifacts = await query.fetch();
+      let deletedCount = 0;
+
+      await database.write(async () => {
+        for (const artifact of artifacts) {
+          await artifact.destroyPermanently();
+          deletedCount++;
+        }
+      });
+
+      logger.info(`✅ Deleted ${deletedCount} AI artifacts`);
+      return deletedCount;
+
+    } catch (error) {
+      logger.error('❌ Failed to delete AI artifacts:', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Update AI artifact kwaliteit score
+   */
+  async updateArtifactQualityScore(artifactId: string, qualityScore: number): Promise<void> {
+    try {
+      logger.info(`🔄 Updating quality score for artifact ${artifactId} to ${qualityScore}`);
+
+      const artifact = await database.collections.get<AIArtifacts>('ai_artifacts')
+        .find(artifactId);
+
+      if (!artifact) {
+        throw new Error(`Artifact ${artifactId} not found`);
+      }
+
+      await database.write(async () => {
+        await artifact.update(artifact => {
+          artifact.qualityScore = qualityScore;
+          artifact.updatedAt = new Date();
+        });
+      });
+
+      logger.info(`✅ Updated quality score for artifact ${artifactId}`);
+
+    } catch (error) {
+      logger.error(`❌ Failed to update quality score for artifact ${artifactId}:`, { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Krijg sync status
+   */
+  getSyncStatus(): AIArtifactSyncStatus {
+    return {
+      pendingSync: 0,
+      synced: 0,
+      failed: 0,
+      lastSyncTime: this.lastSyncTime,
+      syncErrors: []
+    };
+  }
+}
+
+// Export singleton instance
+export const aiArtifactsManagementService = AIArtifactsManagementService.getInstance();
+
+
+

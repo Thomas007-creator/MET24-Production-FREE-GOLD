@@ -1,0 +1,322 @@
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import {
+  IconButton,
+  IconButtonProvider,
+  useIconButton,
+  BaseIconButton,
+  LoadingIconButton,
+  TooltipIconButton,
+  PrimaryIconButton,
+  SecondaryIconButton,
+  GhostIconButton,
+  DangerIconButton,
+  SmallIconButton,
+  MediumIconButton,
+  LargeIconButton,
+} from './IconButton.refactored';
+import { Heart, Star } from 'lucide-react';
+
+// Mock Lucide icons
+jest.mock('lucide-react', () => ({
+  Heart: () => <div data-testid="heart-icon">Heart</div>,
+  Star: () => <div data-testid="star-icon">Star</div>,
+}));
+
+// Mock NextUI Button
+jest.mock('@nextui-org/react', () => ({
+  Button: ({ children, className, isLoading, title, ...props }: any) => (
+    <button
+      data-testid="button"
+      className={className}
+      data-loading={isLoading}
+      title={title}
+      data-props={JSON.stringify(props)}
+    >
+      {children}
+    </button>
+  ),
+}));
+
+describe('IconButton Composition Architecture', () => {
+  describe('Provider Pattern', () => {
+    it('provides context to child components', () => {
+      const TestComponent = () => {
+        const context = useIconButton();
+        return <div data-testid="context-value">{JSON.stringify(context)}</div>;
+      };
+
+      render(
+        <IconButtonProvider variant="secondary" size="lg" loading={true} tooltip="Test tooltip">
+          <TestComponent />
+        </IconButtonProvider>
+      );
+
+      const contextValue = JSON.parse(screen.getByTestId('context-value').textContent || '{}');
+      expect(contextValue).toEqual({
+        variant: 'secondary',
+        size: 'lg',
+        loading: true,
+        tooltip: 'Test tooltip',
+      });
+    });
+
+    it('throws error when useIconButton is used outside provider', () => {
+      const TestComponent = () => {
+        useIconButton();
+        return <div>Test</div>;
+      };
+
+      expect(() => render(<TestComponent />)).toThrow(
+        'useIconButton must be used within IconButtonProvider'
+      );
+    });
+  });
+
+  describe('BaseIconButton Component', () => {
+    it('renders with default context values', () => {
+      render(
+        <IconButtonProvider>
+          <BaseIconButton icon={Heart} />
+        </IconButtonProvider>
+      );
+
+      const button = screen.getByTestId('button');
+      expect(button).toBeInTheDocument();
+      expect(button).toHaveClass('backdrop-blur-xl', 'border');
+      expect(button).toHaveAttribute('data-loading', 'false');
+      expect(screen.getByTestId('heart-icon')).toBeInTheDocument();
+    });
+
+    it('applies variant classes correctly', () => {
+      render(
+        <IconButtonProvider variant="danger">
+          <BaseIconButton icon={Heart} />
+        </IconButtonProvider>
+      );
+
+      const button = screen.getByTestId('button');
+      expect(button).toHaveClass('bg-red-500/20', 'border-red-500/30', 'text-red-400');
+    });
+
+    it('applies size classes correctly', () => {
+      render(
+        <IconButtonProvider size="sm">
+          <BaseIconButton icon={Heart} />
+        </IconButtonProvider>
+      );
+
+      const button = screen.getByTestId('button');
+      expect(button).toHaveClass('w-8', 'h-8', 'min-w-8');
+    });
+
+    it('handles loading state', () => {
+      render(
+        <IconButtonProvider loading={true}>
+          <BaseIconButton icon={Heart} />
+        </IconButtonProvider>
+      );
+
+      const button = screen.getByTestId('button');
+      expect(button).toHaveAttribute('data-loading', 'true');
+    });
+
+    it('handles tooltip', () => {
+      render(
+        <IconButtonProvider tooltip="Test tooltip">
+          <BaseIconButton icon={Heart} />
+        </IconButtonProvider>
+      );
+
+      const button = screen.getByTestId('button');
+      expect(button).toHaveAttribute('title', 'Test tooltip');
+    });
+
+    it('passes through additional props', () => {
+      render(
+        <IconButtonProvider>
+          <BaseIconButton icon={Heart} data-custom="test-prop" onClick={() => {}} />
+        </IconButtonProvider>
+      );
+
+      const button = screen.getByTestId('button');
+      const props = JSON.parse(button.getAttribute('data-props') || '{}');
+      expect(props['data-custom']).toBe('test-prop');
+      expect(typeof props.onClick).toBe('function');
+    });
+  });
+
+  describe('LoadingIconButton Component', () => {
+    it('sets loading state to true', () => {
+      render(<LoadingIconButton icon={Heart} />);
+
+      const button = screen.getByTestId('button');
+      expect(button).toHaveAttribute('data-loading', 'true');
+    });
+
+    it('accepts children for composition', () => {
+      render(
+        <LoadingIconButton icon={Heart}>
+          <span>Loading...</span>
+        </LoadingIconButton>
+      );
+
+      expect(screen.getByText('Loading...')).toBeInTheDocument();
+    });
+  });
+
+  describe('TooltipIconButton Component', () => {
+    it('sets tooltip correctly', () => {
+      render(<TooltipIconButton icon={Heart} tooltip="Help text" />);
+
+      const button = screen.getByTestId('button');
+      expect(button).toHaveAttribute('title', 'Help text');
+    });
+  });
+
+  describe('Discrete Variant Components', () => {
+    const variants = [
+      { Component: PrimaryIconButton, expectedClass: 'bg-glass-primary' },
+      { Component: SecondaryIconButton, expectedClass: 'bg-glass-secondary' },
+      { Component: GhostIconButton, expectedClass: 'bg-transparent' },
+      { Component: DangerIconButton, expectedClass: 'bg-red-500/20' },
+    ];
+
+    variants.forEach(({ Component, expectedClass }) => {
+      it(`${Component.name} applies correct variant styling`, () => {
+        render(<Component icon={Heart} />);
+
+        const button = screen.getByTestId('button');
+        expect(button).toHaveClass(expectedClass);
+        expect(screen.getByTestId('heart-icon')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Size Variant Components', () => {
+    const sizes = [
+      { Component: SmallIconButton, expectedClasses: ['w-8', 'h-8', 'min-w-8'] },
+      { Component: MediumIconButton, expectedClasses: ['w-10', 'h-10', 'min-w-10'] },
+      { Component: LargeIconButton, expectedClasses: ['w-12', 'h-12', 'min-w-12'] },
+    ];
+
+    sizes.forEach(({ Component, expectedClasses }) => {
+      it(`${Component.name} applies correct size styling`, () => {
+        render(<Component icon={Heart} />);
+
+        const button = screen.getByTestId('button');
+        expectedClasses.forEach(className => {
+          expect(button).toHaveClass(className);
+        });
+        expect(screen.getByTestId('heart-icon')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Backwards Compatibility Layer', () => {
+    it('maintains original IconButton API', () => {
+      render(
+        <IconButton
+          icon={Heart}
+          variant="primary"
+          size="md"
+          tooltip="Test tooltip"
+          loading={false}
+        />
+      );
+
+      const button = screen.getByTestId('button');
+      expect(button).toHaveClass('bg-glass-primary');
+      expect(button).toHaveAttribute('data-loading', 'false');
+      expect(button).toHaveAttribute('title', 'Test tooltip');
+      expect(screen.getByTestId('heart-icon')).toBeInTheDocument();
+    });
+
+    it('supports loading prop', () => {
+      render(<IconButton icon={Heart} loading={true} />);
+
+      const button = screen.getByTestId('button');
+      expect(button).toHaveAttribute('data-loading', 'true');
+    });
+
+    it('supports tooltip prop', () => {
+      render(<IconButton icon={Heart} tooltip="Help" />);
+
+      const button = screen.getByTestId('button');
+      expect(button).toHaveAttribute('title', 'Help');
+    });
+
+    it('passes through additional Button props', () => {
+      render(
+        <IconButton
+          icon={Heart}
+          disabled
+          onClick={() => {}}
+          data-testid="custom-button"
+        />
+      );
+
+      const button = screen.getByTestId('button');
+      const props = JSON.parse(button.getAttribute('data-props') || '{}');
+      expect(props.disabled).toBe(true);
+      expect(typeof props.onClick).toBe('function');
+    });
+  });
+
+  describe('Composition Patterns', () => {
+    it('allows nested provider override', () => {
+      render(
+        <IconButtonProvider variant="primary" size="md">
+          <PrimaryIconButton icon={Heart} />
+          <IconButtonProvider variant="danger">
+            <DangerIconButton icon={Star} />
+          </IconButtonProvider>
+        </IconButtonProvider>
+      );
+
+      const buttons = screen.getAllByTestId('button');
+      expect(buttons[0]).toHaveClass('bg-glass-primary'); // PrimaryIconButton
+      expect(buttons[1]).toHaveClass('bg-red-500/20'); // DangerIconButton
+    });
+
+    it('supports complex loading composition', () => {
+      render(
+        <IconButtonProvider loading={true}>
+          <BaseIconButton icon={Heart}>
+            <span>Custom loading</span>
+          </BaseIconButton>
+        </IconButtonProvider>
+      );
+
+      expect(screen.getByText('Custom loading')).toBeInTheDocument();
+      const button = screen.getByTestId('button');
+      expect(button).toHaveAttribute('data-loading', 'true');
+    });
+  });
+
+  describe('Error Boundaries & Edge Cases', () => {
+    it('handles missing icon gracefully', () => {
+      // This would normally cause an error, but in composition pattern
+      // the icon is required at the component level
+      expect(() => {
+        render(
+          <IconButtonProvider>
+            <BaseIconButton icon={undefined as any} />
+          </IconButtonProvider>
+        );
+      }).not.toThrow();
+    });
+
+    it('handles empty tooltip', () => {
+      render(
+        <IconButtonProvider tooltip="">
+          <BaseIconButton icon={Heart} />
+        </IconButtonProvider>
+      );
+
+      const button = screen.getByTestId('button');
+      expect(button).toHaveAttribute('title', '');
+    });
+  });
+});

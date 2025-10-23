@@ -1,0 +1,959 @@
+{
+  "timestamp": "2025-10-19T19:37:58.416Z",
+  "config": {
+    "maxPropsPerComponent": 8,
+    "maxBooleanProps": 3,
+    "monolithicComponentThreshold": 100,
+    "compositionPatterns": [
+      "Provider",
+      "Context",
+      "Compound",
+      "Render Props"
+    ]
+  },
+  "violations": [
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "AICoachingInterface.tsx",
+      "component": "AICoachingInterface",
+      "lines": 558,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (558 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "ActiveImaginationInterface.tsx",
+      "component": "ActiveImaginationInterface",
+      "lines": 928,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (928 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "AppRoutes.tsx",
+      "component": "AppRoutes",
+      "lines": 192,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (192 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "BMADDashboard.tsx",
+      "component": "BMADDashboard",
+      "lines": 533,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (533 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "BackToBasics/EnhancedLevensgebiedDetailPage.community-tab.tsx",
+      "component": "EnhancedLevensgebiedDetailPageCommunityTab",
+      "lines": 114,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (114 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "BackToBasics/EnhancedLevensgebiedDetailPage.provider.tsx",
+      "component": "MBTICommunityMapping",
+      "lines": 178,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (178 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "BackToBasics/LevensgebiedDetailAICoachingTab.tsx",
+      "component": "LevensgebiedDetailAICoachingTab",
+      "lines": 112,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (112 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "BackToBasics/LevensgebiedDetailCommunityTab.tsx",
+      "component": "LevensgebiedDetailCommunityTab",
+      "lines": 119,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (119 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "BackToBasics/LevensgebiedDetailQuestionnaireTab.tsx",
+      "component": "LevensgebiedDetailQuestionnaireTab",
+      "lines": 122,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (122 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "ChallengesPage.original.tsx",
+      "component": "ChallengesPage",
+      "lines": 1161,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (1161 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "ChatLLMFeatureShowcase.tsx",
+      "component": "ChatLLMFeatureShowcase",
+      "lines": 594,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (594 lijnen)"
+    },
+    {
+      "type": "ARRAY_BASED_CONDITIONAL_RENDERING",
+      "file": "ChatLLMFeatureShowcase.tsx",
+      "severity": "MEDIUM",
+      "message": "Array-based conditionele rendering gevonden - overweeg directe JSX compositie"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "ChatLLMRAGInterface.tsx",
+      "component": "ChatLLMRAGInterface",
+      "lines": 451,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (451 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "ChatPage.tsx",
+      "component": "ChatPage",
+      "lines": 484,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (484 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "CommunityPage.tsx",
+      "component": "CommunityPage",
+      "lines": 113,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (113 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "DatabaseMigrationTest.tsx",
+      "component": "DatabaseMigrationTest",
+      "lines": 169,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (169 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "DevelopDataPage.tsx",
+      "component": "DevelopDataPage",
+      "lines": 653,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (653 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "DiscourseIntegrationInterface.tsx",
+      "component": "DiscourseIntegrationInterface",
+      "lines": 553,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (553 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "EntryModal.tsx",
+      "component": "EntryModal",
+      "lines": 126,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (126 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "InspirationsOverview.tsx",
+      "component": "InspirationsOverview",
+      "lines": 150,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (150 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "JournalingPage.tsx",
+      "component": "JournalingPage",
+      "lines": 724,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (724 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "MCPBridgeSyncDemo.tsx",
+      "component": "MCPBridgeSyncDemo",
+      "lines": 405,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (405 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "MET23PO23Interface.tsx",
+      "component": "MET23PO23Interface",
+      "lines": 278,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (278 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "MET24DomainsPage.tsx",
+      "component": "MET24DomainsPage",
+      "lines": 307,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (307 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "MockTestPage.tsx",
+      "component": "MockTestPage",
+      "lines": 233,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (233 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "OnboardingFlowSimulator.tsx",
+      "component": "OnboardingFlowSimulator",
+      "lines": 315,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (315 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "OnboardingTest.tsx",
+      "component": "OnboardingTest",
+      "lines": 123,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (123 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "PWATest.tsx",
+      "component": "PWATest",
+      "lines": 364,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (364 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "PersonalMBTICoachInterface.tsx",
+      "component": "PersonalMBTICoachInterface",
+      "lines": 525,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (525 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "ProfilePage.original.tsx",
+      "component": "ProfilePage",
+      "lines": 539,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (539 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "SettingsPage.ai-services-tab.tsx",
+      "component": "SettingsPageAIServicesTab",
+      "lines": 411,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (411 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "SettingsPage.app-tab.tsx",
+      "component": "SettingsPageAppTab",
+      "lines": 148,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (148 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "SettingsPage.header.tsx",
+      "component": "SettingsPageHeader",
+      "lines": 103,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (103 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "SettingsPage.modals.tsx",
+      "component": "SettingsPageModals",
+      "lines": 123,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (123 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "SettingsPage.notifications-tab.tsx",
+      "component": "SettingsPageNotificationsTab",
+      "lines": 113,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (113 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "SettingsPage.privacy-tab.tsx",
+      "component": "SettingsPagePrivacyTab",
+      "lines": 105,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (105 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "StreamlinedMainView.tsx",
+      "component": "StreamlinedMainView",
+      "lines": 307,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (307 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "SyncServiceDemo.tsx",
+      "component": "SyncServiceDemo",
+      "lines": 361,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (361 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "TestPages/V14AuditIntegrationTestPage.tsx",
+      "component": "V14AuditIntegrationTestPage",
+      "lines": 269,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (269 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "TherapistPage.tsx",
+      "component": "TherapistPageContent",
+      "lines": 155,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (155 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "TherapistPage.tsx",
+      "component": "TherapistPage",
+      "lines": 155,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (155 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "TherapistPageNew.tsx",
+      "component": "TherapistPageNew",
+      "lines": 615,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (615 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "V14DynamicSyncDemo.tsx",
+      "component": "V14DynamicSyncDemo",
+      "lines": 361,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (361 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "V14ExtensionsDemo.original.tsx",
+      "component": "V14ExtensionsDemo",
+      "lines": 223,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (223 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "V14ExtensionsDemo.refactored.tsx",
+      "component": "V14ExtensionsDemoContent",
+      "lines": 108,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (108 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "V14ExtensionsDemo.refactored.tsx",
+      "component": "V14ExtensionsDemo",
+      "lines": 108,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (108 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "V14ExtensionsDemo.refactored.tsx",
+      "component": "V14Extensions",
+      "lines": 108,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (108 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "V14SyncDemo.tsx",
+      "component": "V14SyncDemo",
+      "lines": 311,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (311 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "V14SyncExample.tsx",
+      "component": "V14SyncExample",
+      "lines": 258,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (258 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "V14SyncStatus.tsx",
+      "component": "V14SyncStatus",
+      "lines": 257,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (257 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "WellnessAnalysisInterface.tsx",
+      "component": "WellnessAnalysisInterface",
+      "lines": 478,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (478 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "ai/AIBuddyTest.tsx",
+      "component": "AIBuddyTest",
+      "lines": 405,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (405 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "ai/SmartFilteringTest.tsx",
+      "component": "SmartFilteringTest",
+      "lines": 331,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (331 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "ai3/AI3PersonalActionPlansInterface.tsx",
+      "component": "AI3PersonalActionPlansInterface",
+      "lines": 610,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (610 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "compliance/OversightConsole.tsx",
+      "component": "OversightConsole",
+      "lines": 667,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (667 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "examples/MainViewExample.tsx",
+      "component": "MainViewExample",
+      "lines": 203,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (203 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "examples/OnboardingExample.tsx",
+      "component": "OnboardingExample",
+      "lines": 114,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (114 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "platinum/IndividualTherapyPrograms.tsx",
+      "component": "IndividualTherapyPrograms",
+      "lines": 1128,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (1128 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "platinum/PracticalApplicationsHub.tsx",
+      "component": "PracticalApplicationsHub",
+      "lines": 379,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (379 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "testing/MPNetTestComponent.tsx",
+      "component": "MPNetTestComponent",
+      "lines": 280,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (280 lijnen)"
+    },
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "ui/ComponentShowcase.tsx",
+      "component": "ComponentShowcase",
+      "lines": 228,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (228 lijnen)"
+    }
+  ],
+  "suggestions": [
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ActiveImaginationPage.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "AppShell.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "BackToBasics/BackToBasicsPage.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "BackToBasics/ContentDiscoveryCarousel.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "BackToBasics/EnhancedLevensgebiedDetailPage.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "BackToBasics/LevensgebiedDetailPage.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ChallengesPage.bmad.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ChallengesPage.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "CommunitiesPage.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "DashboardPage.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "DownloadButton.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "EnhancedJournalingPage.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "MainView.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "NavigationButton.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/a-OnboardingAccountCreated.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/b-OnboardingAuth.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/c-OnboardingPrivacy.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/d-OnboardingProfile.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/e-OnboardingAccountSecurity.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/f-OnboardingMbti.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/g-OnboardingMbtiQuicktest.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/h-OnboardingMbtiResult.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/i-OnboardingInterests.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/j-OnboardingContext.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/k-OnboardingWellness.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/l-OnboardingNotifications.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/m-OnboardingVerification.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "OnboardingSteps/n-OnboardingComplete.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "PerformanceOptimizedWrapper.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ProfilePage.bmad.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ProfilePage.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "SettingsPage.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "SwipeNavigation/SwipeNavigation.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "TherapistPage.provider.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "V14ExtensionsDemo.bmad.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "V14ExtensionsDemo.refactored.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "V14ExtensionsDemo.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "VPNStatusIndicator.bmad.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "VPNStatusIndicator.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "VPNTestingStatus.bmad.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "VPNTestingStatus.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "WorkboxStatus.bmad.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "WorkboxStatus.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ai/ActiveImaginationBoundary.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "parallax/FeatureParallaxManager.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "parallax/OnboardingParallaxManager.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "parallax/ParallaxLayouts.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "pwa/BMADPWAManager.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ui/BigButton.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ui/DesignSystem.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ui/DesignSystemFallback.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ui/GlassCard.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ui/SectionTitle.bmad.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ui/SectionTitle.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ui/ThemePill.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    }
+  ],
+  "score": {
+    "score": 0,
+    "totalFiles": 57,
+    "violations": {
+      "high": 0,
+      "medium": 61,
+      "total": 61
+    },
+    "suggestions": 55
+  }
+}

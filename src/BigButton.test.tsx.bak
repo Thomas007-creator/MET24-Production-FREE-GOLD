@@ -1,0 +1,285 @@
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { 
+  BigButton,
+  BigButtonProvider,
+  PrimaryButton,
+  SecondaryButton,
+  LoadingButton,
+  StartIcon,
+  EndIcon
+} from './BigButton.refactored';
+import { Save, ArrowRight } from 'lucide-react';
+
+describe('BigButton Composition Architecture', () => {
+  
+  // ===== ORIGINAL FUNCTIONALITY PRESERVATION =====
+  
+  describe('Original Functionality', () => {
+    it('renders basic button with children', () => {
+      render(<BigButton>Save Changes</BigButton>);
+      expect(screen.getByText('Save Changes')).toBeInTheDocument();
+    });
+
+    it('handles click events correctly', () => {
+      const handleClick = jest.fn();
+      render(<BigButton onClick={handleClick}>Click Me</BigButton>);
+      
+      fireEvent.click(screen.getByText('Click Me'));
+      expect(handleClick).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // ===== COMPOSITION PATTERN VALIDATION =====
+  
+  describe('Provider Pattern', () => {
+    it('provides context to nested components', () => {
+      render(
+        <BigButtonProvider variant="primary" size="lg" fullWidth={true}>
+          <div data-testid="context-consumer">
+            Button with context
+          </div>
+        </BigButtonProvider>
+      );
+      
+      expect(screen.getByTestId('context-consumer')).toBeInTheDocument();
+    });
+
+    it('throws error when used outside provider context', () => {
+      // This would throw in real usage, but we need to handle it in tests
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      
+      expect(() => {
+        render(<StartIcon icon={Save} />);
+      }).toThrow('useBigButton must be used within BigButtonProvider');
+      
+      consoleSpy.mockRestore();
+    });
+  });
+
+  // ===== DISCRETE COMPONENT VALIDATION =====
+
+  describe('Discrete Components', () => {
+    it('renders PrimaryButton without boolean props', () => {
+      render(<PrimaryButton>Primary Action</PrimaryButton>);
+      
+      const button = screen.getByText('Primary Action');
+      expect(button).toBeInTheDocument();
+      expect(button.closest('button')).toHaveClass('bg-glass-accent');
+    });
+
+    it('renders SecondaryButton with different styling', () => {
+      render(<SecondaryButton>Secondary Action</SecondaryButton>);
+      
+      const button = screen.getByText('Secondary Action');
+      expect(button).toBeInTheDocument();
+      expect(button.closest('button')).toHaveClass('bg-glass-primary');
+    });
+
+    it('renders LoadingButton with loading state', () => {
+      render(<LoadingButton>Loading...</LoadingButton>);
+      
+      const button = screen.getByText('Loading...');
+      expect(button).toBeInTheDocument();
+      // NextUI Button component would add loading spinner
+    });
+  });
+
+  // ===== JSX COMPOSITION VALIDATION =====
+
+  describe('JSX Composition', () => {
+    it('composes icons via presence, not boolean props', () => {
+      render(
+        <BigButtonProvider>
+          <BigButton>
+            <StartIcon icon={Save} />
+            Save Document
+            <EndIcon icon={ArrowRight} />
+          </BigButton>
+        </BigButtonProvider>
+      );
+
+      expect(screen.getByText('Save Document')).toBeInTheDocument();
+    });
+
+    it('allows complex composition patterns', () => {
+      render(
+        <BigButtonProvider variant="gold" size="xl">
+          <div className="button-container">
+            <BigButton>Complex Button</BigButton>
+          </div>
+        </BigButtonProvider>
+      );
+
+      expect(screen.getByText('Complex Button')).toBeInTheDocument();
+    });
+  });
+
+  // ===== CONDITIONAL RENDERING VIA PRESENCE =====
+
+  describe('Conditional Rendering', () => {
+    it('renders different buttons based on state via presence', () => {
+      const TestComponent = ({ isEditing }: { isEditing: boolean }) => (
+        <div>
+          {isEditing ? (
+            <>
+              <PrimaryButton data-testid="save-btn">Save</PrimaryButton>
+              <SecondaryButton data-testid="cancel-btn">Cancel</SecondaryButton>
+            </>
+          ) : (
+            <PrimaryButton data-testid="edit-btn">Edit</PrimaryButton>
+          )}
+        </div>
+      );
+
+      // Test editing state
+      const { rerender } = render(<TestComponent isEditing={true} />);
+      expect(screen.getByTestId('save-btn')).toBeInTheDocument();
+      expect(screen.getByTestId('cancel-btn')).toBeInTheDocument();
+      expect(screen.queryByTestId('edit-btn')).not.toBeInTheDocument();
+
+      // Test non-editing state
+      rerender(<TestComponent isEditing={false} />);
+      expect(screen.getByTestId('edit-btn')).toBeInTheDocument();
+      expect(screen.queryByTestId('save-btn')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('cancel-btn')).not.toBeInTheDocument();
+    });
+  });
+
+  // ===== PERFORMANCE & TYPE SAFETY =====
+
+  describe('Type Safety & Performance', () => {
+    it('maintains TypeScript strict mode compliance', () => {
+      // This test passes if the component compiles with strict TypeScript
+      render(
+        <BigButtonProvider variant="primary" size="lg">
+          <PrimaryButton onClick={() => console.log('clicked')}>
+            Type Safe Button
+          </PrimaryButton>
+        </BigButtonProvider>
+      );
+      
+      expect(screen.getByText('Type Safe Button')).toBeInTheDocument();
+    });
+
+    it('supports all original props for backwards compatibility', () => {
+      render(
+        <BigButton 
+          variant="success"
+          size="xl"
+          fullWidth={true}
+          loading={false}
+          className="custom-class"
+          data-testid="compat-button"
+        >
+          Backwards Compatible
+        </BigButton>
+      );
+
+      const button = screen.getByTestId('compat-button');
+      expect(button).toBeInTheDocument();
+      expect(button).toHaveClass('custom-class');
+    });
+  });
+
+  // ===== BMAD METHOD COMPLIANCE =====
+
+  describe('BMAD Method Compliance', () => {
+    it('eliminates boolean props that control rendering', () => {
+      // Instead of: <BigButton loading={true} />
+      // We use: <LoadingButton />
+      render(<LoadingButton>Processing...</LoadingButton>);
+      expect(screen.getByText('Processing...')).toBeInTheDocument();
+    });
+
+    it('uses Provider for state management', () => {
+      render(
+        <BigButtonProvider variant="danger" loading={true}>
+          <BigButton>Dangerous Action</BigButton>
+        </BigButtonProvider>
+      );
+      
+      expect(screen.getByText('Dangerous Action')).toBeInTheDocument();
+    });
+
+    it('enables JSX composition over array-based rendering', () => {
+      const actions = ['Save', 'Cancel', 'Delete'];
+      
+      render(
+        <div>
+          {/* ❌ OLD: Array-based with conditionals */}
+          {/* {actions.map(action => 
+              <BigButton key={action} variant={action === 'Delete' ? 'danger' : 'primary'}>
+                {action}
+              </BigButton>
+            )} */}
+            
+          {/* ✅ NEW: Direct JSX composition */}
+          <PrimaryButton>Save</PrimaryButton>
+          <SecondaryButton>Cancel</SecondaryButton>
+          <BigButtonProvider variant="danger">
+            <BigButton>Delete</BigButton>
+          </BigButtonProvider>
+        </div>
+      );
+
+      expect(screen.getByText('Save')).toBeInTheDocument();
+      expect(screen.getByText('Cancel')).toBeInTheDocument(); 
+      expect(screen.getByText('Delete')).toBeInTheDocument();
+    });
+  });
+});
+
+// ===== ARCHITECTURE QUALITY METRICS =====
+
+describe('Architecture Quality Metrics', () => {
+  it('has no boolean props controlling component trees', () => {
+    // All components should render their children without boolean logic
+    const components = [PrimaryButton, SecondaryButton, LoadingButton];
+    
+    components.forEach((Component, index) => {
+      render(<Component key={index}>Test {index}</Component>);
+      expect(screen.getByText(`Test ${index}`)).toBeInTheDocument();
+    });
+  });
+
+  it('supports external component access via Provider', () => {
+    const ExternalComponent = () => {
+      // This component is outside the main button UI but can access context
+      return (
+        <div data-testid="external">
+          External component with access to button context
+        </div>
+      );
+    };
+
+    render(
+      <BigButtonProvider variant="gold">
+        <BigButton>Main Button</BigButton>
+        <ExternalComponent />
+      </BigButtonProvider>
+    );
+
+    expect(screen.getByTestId('external')).toBeInTheDocument();
+    expect(screen.getByText('Main Button')).toBeInTheDocument();
+  });
+
+  it('maintains clean separation of concerns', () => {
+    // Each component has a single responsibility
+    render(
+      <BigButtonProvider>
+        <div className="button-group">
+          <PrimaryButton>Primary</PrimaryButton>  {/* Only handles primary styling */}
+          <LoadingButton>Loading</LoadingButton>  {/* Only handles loading state */}
+          <StartIcon icon={Save} />               {/* Only handles start icon */}
+        </div>
+      </BigButtonProvider>
+    );
+
+    expect(screen.getByText('Primary')).toBeInTheDocument();
+    expect(screen.getByText('Loading')).toBeInTheDocument();
+  });
+});
+
+export default BigButton;

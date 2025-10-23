@@ -1,0 +1,38 @@
+# Existing Environment Variables from MET24 Production Backup
+# Generated on: Tue Sep 30 15:55:50 CEST 2025
+
+VAPID_PUBLIC_KEY=your-vapid-public-key-here
+VAPID_PRIVATE_KEY=your-vapid-private-key-here
+VAPID_EMAIL=mailto:thomas@your-future-self.app
+
+
+# ================================================
+# COOLIFY ENVIRONMENT VARIABLES (READY TO COPY)
+# ================================================
+
+# VAPID Keys (CRITICAL - These are already generated!)
+VAPID_PUBLIC_KEY=your-vapid-public-key-here
+VAPID_PRIVATE_KEY=your-vapid-private-key-here
+VAPID_EMAIL=mailto:thomas@your-future-self.app
+
+# Supabase Configuration (You need to fill these in)
+REACT_APP_SUPABASE_URL=your_supabase_url_here
+REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+
+# AI Provider Keys (Optional - will use free tiers if not provided)
+MCP_API_KEY=your_mcp_api_key_here
+GROK_API_KEY=your_grok_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# SSL Configuration
+SSL_EMAIL=thomas@your-future-self.app
+
+# Node Environment
+NODE_ENV=production
+REACT_APP_NODE_ENV=production
+
+# API URLs
+REACT_APP_API_URL=https://www.your-future-self.app/api
+REACT_APP_MCP_BRIDGE_URL=https://www.your-future-self.app/mcp
+

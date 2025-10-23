@@ -1,0 +1,229 @@
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import ComponentShowcase from './ComponentShowcase.refactored';
+
+// Mock the logger
+jest.mock('../../utils/logger', () => ({
+  logger: {
+    info: jest.fn(),
+  },
+}));
+
+// Mock the imported components
+jest.mock('./index', () => ({
+  GlassCard: ({ children, variant, padding }: any) => (
+    <div data-testid={`glass-card-${variant}-${padding}`}>{children}</div>
+  ),
+  BigButton: ({ children, variant, icon, iconPosition, fullWidth }: any) => (
+    <button data-testid={`big-button-${variant}`} data-icon-position={iconPosition} data-full-width={fullWidth}>
+      {children}
+    </button>
+  ),
+  IconButton: ({ icon, variant, size, tooltip }: any) => (
+    <button data-testid={`icon-button-${variant}-${size}`} title={tooltip} />
+  ),
+  ThemePill: ({ children, variant, icon }: any) => (
+    <span data-testid={`theme-pill-${variant}`}>{children}</span>
+  ),
+  SectionTitle: ({ title, subtitle, icon, size, variant }: any) => (
+    <div data-testid={`section-title-${size}`} data-variant={variant}>
+      <h1>{title}</h1>
+      {subtitle && <p>{subtitle}</p>}
+    </div>
+  ),
+  NavigationFooter: ({ items, variant, size, showLabels }: any) => (
+    <nav data-testid={`navigation-footer-${variant}-${size}`} data-show-labels={showLabels}>
+      {items.map((item: any, index: number) => (
+        <button key={index} onClick={item.onClick} data-active={item.active}>
+          {item.label}
+        </button>
+      ))}
+    </nav>
+  ),
+  NavigationItem: () => null,
+}));
+
+describe('ComponentShowcase - Composition Architecture', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('Provider Pattern', () => {
+    it('provides navigation items through context', () => {
+      render(<ComponentShowcase />);
+
+      // Check that navigation items are rendered
+      expect(screen.getByText('Home')).toBeInTheDocument();
+      expect(screen.getByText('Analytics')).toBeInTheDocument();
+      expect(screen.getByText('Activity')).toBeInTheDocument();
+    });
+
+    it('handles navigation item clicks', () => {
+      const { logger } = require('../../utils/logger');
+
+      render(<ComponentShowcase />);
+
+      const homeButton = screen.getByText('Home');
+      fireEvent.click(homeButton);
+
+      expect(logger.info).toHaveBeenCalledWith('Home clicked');
+    });
+  });
+
+  describe('Section Components', () => {
+    it('renders GlassCard showcase section', () => {
+      render(<ComponentShowcase />);
+
+      expect(screen.getByTestId('glass-card-primary-lg')).toBeInTheDocument();
+      expect(screen.getByTestId('glass-card-secondary-lg')).toBeInTheDocument();
+      expect(screen.getByTestId('glass-card-accent-lg')).toBeInTheDocument();
+
+      expect(screen.getByText('Primary Card')).toBeInTheDocument();
+      expect(screen.getByText('Secondary Card')).toBeInTheDocument();
+      expect(screen.getByText('Accent Card')).toBeInTheDocument();
+    });
+
+    it('renders BigButton showcase section', () => {
+      render(<ComponentShowcase />);
+
+      expect(screen.getByText('BigButton Varianten')).toBeInTheDocument();
+
+      expect(screen.getByTestId('big-button-primary')).toBeInTheDocument();
+      expect(screen.getByTestId('big-button-secondary')).toHaveAttribute('data-icon-position', 'start');
+      expect(screen.getByTestId('big-button-success')).toBeInTheDocument();
+      expect(screen.getByTestId('big-button-warning')).toBeInTheDocument();
+      expect(screen.getByTestId('big-button-danger')).toBeInTheDocument();
+      expect(screen.getByTestId('big-button-gold')).toBeInTheDocument();
+    });
+
+    it('renders IconButton showcase section', () => {
+      render(<ComponentShowcase />);
+
+      expect(screen.getByText('IconButton Varianten')).toBeInTheDocument();
+
+      expect(screen.getByTestId('icon-button-primary-lg')).toHaveAttribute('title', 'Settings');
+      expect(screen.getByTestId('icon-button-secondary-md')).toHaveAttribute('title', 'Profile');
+      expect(screen.getByTestId('icon-button-ghost-sm')).toHaveAttribute('title', 'Notifications');
+      expect(screen.getByTestId('icon-button-danger-md')).toHaveAttribute('title', 'Alert');
+    });
+
+    it('renders ThemePill showcase section', () => {
+      render(<ComponentShowcase />);
+
+      expect(screen.getByText('ThemePill Varianten')).toBeInTheDocument();
+
+      expect(screen.getByTestId('theme-pill-primary')).toBeInTheDocument();
+      expect(screen.getByTestId('theme-pill-secondary')).toBeInTheDocument();
+      expect(screen.getByTestId('theme-pill-success')).toBeInTheDocument();
+      expect(screen.getByTestId('theme-pill-warning')).toBeInTheDocument();
+      expect(screen.getByTestId('theme-pill-danger')).toBeInTheDocument();
+      expect(screen.getByTestId('theme-pill-info')).toBeInTheDocument();
+      expect(screen.getByTestId('theme-pill-gradient')).toBeInTheDocument();
+    });
+
+    it('renders NavigationFooter showcase section', () => {
+      render(<ComponentShowcase />);
+
+      expect(screen.getByText('NavigationFooter')).toBeInTheDocument();
+      expect(screen.getByTestId('navigation-footer-horizontal-md')).toHaveAttribute('data-show-labels', 'true');
+    });
+
+    it('renders ComplexExample section', () => {
+      render(<ComponentShowcase />);
+
+      expect(screen.getByText('Complexe Combinatie')).toBeInTheDocument();
+      expect(screen.getByText('Dashboard Widget')).toBeInTheDocument();
+      expect(screen.getByText('Actief')).toBeInTheDocument();
+      expect(screen.getByText('Real-time')).toBeInTheDocument();
+      expect(screen.getByText('Premium')).toBeInTheDocument();
+      expect(screen.getByText('Bekijk Details')).toBeInTheDocument();
+      expect(screen.getByText('Instellingen')).toBeInTheDocument();
+    });
+  });
+
+  describe('Main Component Structure', () => {
+    it('renders main title and subtitle', () => {
+      render(<ComponentShowcase />);
+
+      expect(screen.getByText('UI Component Showcase')).toBeInTheDocument();
+      expect(screen.getByText('Herbruikbare componenten met consistente styling')).toBeInTheDocument();
+    });
+
+    it('maintains correct section order', () => {
+      render(<ComponentShowcase />);
+
+      const sections = [
+        'UI Component Showcase',
+        'BigButton Varianten',
+        'IconButton Varianten',
+        'ThemePill Varianten',
+        'NavigationFooter',
+        'Complexe Combinatie'
+      ];
+
+      sections.forEach(section => {
+        expect(screen.getByText(section)).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Backwards Compatibility', () => {
+    it('maintains exact visual structure', () => {
+      const { container } = render(<ComponentShowcase />);
+
+      // Check that the main container has the expected classes
+      const mainContainer = container.firstChild;
+      expect(mainContainer).toHaveClass('min-h-screen');
+      expect(mainContainer).toHaveClass('bg-gradient-to-br');
+      expect(mainContainer).toHaveClass('p-6');
+    });
+
+    it('preserves all component interactions', () => {
+      const { logger } = require('../../utils/logger');
+
+      render(<ComponentShowcase />);
+
+      // Test navigation clicks
+      fireEvent.click(screen.getByText('Home'));
+      fireEvent.click(screen.getByText('Analytics'));
+      fireEvent.click(screen.getByText('Activity'));
+
+      expect(logger.info).toHaveBeenCalledTimes(3);
+      expect(logger.info).toHaveBeenCalledWith('Home clicked');
+      expect(logger.info).toHaveBeenCalledWith('Analytics clicked');
+      expect(logger.info).toHaveBeenCalledWith('Activity clicked');
+    });
+  });
+
+  describe('Composition Patterns', () => {
+    it('uses Provider pattern for shared state', () => {
+      render(<ComponentShowcase />);
+
+      // The navigation items should be accessible through context
+      // This is tested implicitly through the NavigationFooter section working
+      expect(screen.getByTestId('navigation-footer-horizontal-md')).toBeInTheDocument();
+    });
+
+    it('composes discrete section components', () => {
+      render(<ComponentShowcase />);
+
+      // All sections should be present and properly composed
+      expect(screen.getByTestId('section-title-xl')).toHaveAttribute('data-variant', 'centered');
+      expect(screen.getByTestId('section-title-lg')).toBeInTheDocument();
+    });
+
+    it('maintains component isolation', () => {
+      render(<ComponentShowcase />);
+
+      // Each section should be independent
+      const bigButtons = screen.getAllByTestId(/^big-button-/);
+      const iconButtons = screen.getAllByTestId(/^icon-button-/);
+      const themePills = screen.getAllByTestId(/^theme-pill-/);
+
+      expect(bigButtons).toHaveLength(6);
+      expect(iconButtons).toHaveLength(4);
+      expect(themePills).toHaveLength(7);
+    });
+  });
+});

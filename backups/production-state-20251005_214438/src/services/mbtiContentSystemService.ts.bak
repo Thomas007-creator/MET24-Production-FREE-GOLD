@@ -1,0 +1,588 @@
+/**
+ * MBTI Content System Service
+ * 
+ * Beheert persoonlijkheidsspecifieke content voor alle 16 MBTI types
+ * Integreert met Enhanced AI System en Content Loader Service
+ * 
+ * @version 1.0.0
+ * @author Thomas
+ */
+
+import database from '../database/v14/databaseV14';
+import MbtiContent from '../database/models/MbtiContent';
+import AIArtifacts from '../database/models/AIArtifacts';
+import { supabase } from '../config/supabase';
+import { logger } from '../utils/logger';
+
+export interface MBTIContentFilter {
+  mbtiType?: string;
+  contentType?: string;
+  category?: string;
+  qualityScore?: number;
+  dateRange?: {
+    start: Date;
+    end: Date;
+  };
+  limit?: number;
+  offset?: number;
+}
+
+export interface MBTIContentStats {
+  totalContent: number;
+  byMBTIType: Record<string, number>;
+  byContentType: Record<string, number>;
+  byCategory: Record<string, number>;
+  averageQualityScore: number;
+  lastUpdated: Date;
+}
+
+export interface MBTIContentRecommendation {
+  mbtiType: string;
+  contentType: string;
+  category: string;
+  title: string;
+  description: string;
+  content: any;
+  qualityScore: number;
+  relevanceScore: number;
+  personalizedFor: string;
+}
+
+export interface MBTIContentGenerationRequest {
+  mbtiType: string;
+  contentType: string;
+  category: string;
+  prompt: string;
+  context?: any;
+  qualityThreshold?: number;
+}
+
+export class MBTIContentSystemService {
+  private static instance: MBTIContentSystemService;
+  private readonly MBTI_TYPES = [
+    'INTJ', 'INTP', 'ENTJ', 'ENTP',
+    'INFJ', 'INFP', 'ENFJ', 'ENFP',
+    'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ',
+    'ISTP', 'ISFP', 'ESTP', 'ESFP'
+  ];
+
+  private readonly CONTENT_TYPES = [
+    'coaching_advice',
+    'personal_development',
+    'challenge_activity',
+    'insight_analysis',
+    'goal_setting',
+    'reflection_prompt',
+    'skill_building',
+    'relationship_guidance'
+  ];
+
+  private readonly CONTENT_CATEGORIES = [
+    'self_awareness',
+    'emotional_intelligence',
+    'interpersonal_relationships',
+    'personal_growth',
+    'creativity_innovation',
+    'external_environment',
+    'stress_management',
+    'decision_making'
+  ];
+
+  private constructor() {}
+
+  public static getInstance(): MBTIContentSystemService {
+    if (!MBTIContentSystemService.instance) {
+      MBTIContentSystemService.instance = new MBTIContentSystemService();
+    }
+    return MBTIContentSystemService.instance;
+  }
+
+  /**
+   * Laad MBTI content met filtering
+   */
+  async loadMBTIContent(filter: MBTIContentFilter = {}): Promise<MbtiContent[]> {
+    try {
+      logger.info('🔄 Loading MBTI content with filter:', filter);
+
+      const query = database.collections.get<MbtiContent>('mbti_content').query();
+
+      // Apply filters
+      if (filter.mbtiType) {
+        query.where('mbti_type', filter.mbtiType);
+      }
+
+      if (filter.contentType) {
+        query.where('content_type', filter.contentType);
+      }
+
+      if (filter.category) {
+        query.where('category', filter.category);
+      }
+
+      if (filter.qualityScore) {
+        query.where('quality_score', Q.gte(filter.qualityScore));
+      }
+
+      if (filter.dateRange) {
+        query.where('created_at', Q.between(filter.dateRange.start, filter.dateRange.end));
+      }
+
+      // Apply pagination
+      if (filter.limit) {
+        query.take(filter.limit);
+      }
+
+      if (filter.offset) {
+        query.skip(filter.offset);
+      }
+
+      const content = await query.fetch();
+      logger.info(`✅ Loaded ${content.length} MBTI content items`);
+
+      return content;
+    } catch (error) {
+      logger.error('❌ Failed to load MBTI content:', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Krijg MBTI content statistieken
+   */
+  async getMBTIContentStats(): Promise<MBTIContentStats> {
+    try {
+      logger.info('📊 Getting MBTI content statistics...');
+
+      const allContent = await database.collections.get<MbtiContent>('mbti_content').query().fetch();
+      
+      const stats: MBTIContentStats = {
+        totalContent: allContent.length,
+        byMBTIType: {},
+        byContentType: {},
+        byCategory: {},
+        averageQualityScore: 0,
+        lastUpdated: new Date()
+      };
+
+      let totalQualityScore = 0;
+      let qualityScoreCount = 0;
+
+      allContent.forEach(content => {
+        // MBTI Type distribution
+        if (content.mbtiType) {
+          stats.byMBTIType[content.mbtiType] = (stats.byMBTIType[content.mbtiType] || 0) + 1;
+        }
+
+        // Content Type distribution
+        if (content.contentType) {
+          stats.byContentType[content.contentType] = (stats.byContentType[content.contentType] || 0) + 1;
+        }
+
+        // Category distribution
+        if (content.category) {
+          stats.byCategory[content.category] = (stats.byCategory[content.category] || 0) + 1;
+        }
+
+        // Quality score average
+        if (content.qualityScore) {
+          totalQualityScore += content.qualityScore;
+          qualityScoreCount++;
+        }
+      });
+
+      stats.averageQualityScore = qualityScoreCount > 0 ? totalQualityScore / qualityScoreCount : 0;
+
+      logger.info('✅ MBTI content statistics calculated:', stats);
+      return stats;
+    } catch (error) {
+      logger.error('❌ Failed to get MBTI content statistics:', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Genereer gepersonaliseerde MBTI content
+   */
+  async generatePersonalizedContent(request: MBTIContentGenerationRequest): Promise<MBTIContent> {
+    try {
+      logger.info(`🔄 Generating personalized content for ${request.mbtiType}:`, request);
+
+      // Validate MBTI type
+      if (!this.MBTI_TYPES.includes(request.mbtiType)) {
+        throw new Error(`Invalid MBTI type: ${request.mbtiType}`);
+      }
+
+      // Validate content type
+      if (!this.CONTENT_TYPES.includes(request.contentType)) {
+        throw new Error(`Invalid content type: ${request.contentType}`);
+      }
+
+      // Validate category
+      if (!this.CONTENT_CATEGORIES.includes(request.category)) {
+        throw new Error(`Invalid category: ${request.category}`);
+      }
+
+      // Generate content using AI
+      const generatedContent = await this.generateAIContent(request);
+
+      // Store in WatermelonDB
+      const mbtiContent = await database.write(async () => {
+        return await database.collections.get<MbtiContent>('mbti_content').create(content => {
+          content.mbtiType = request.mbtiType;
+          content.contentType = request.contentType;
+          content.category = request.category;
+          content.title = generatedContent.title;
+          content.description = generatedContent.description;
+          content.content = generatedContent.content;
+          content.qualityScore = generatedContent.qualityScore;
+          content.relevanceScore = generatedContent.relevanceScore;
+          content.personalizedFor = request.mbtiType;
+          content.createdAt = new Date();
+          content.updatedAt = new Date();
+        });
+      });
+
+      logger.info(`✅ Generated personalized content for ${request.mbtiType}: ${mbtiContent.id}`);
+      return mbtiContent;
+
+    } catch (error) {
+      logger.error('❌ Failed to generate personalized content:', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Genereer AI content voor MBTI type
+   */
+  private async generateAIContent(request: MBTIContentGenerationRequest): Promise<any> {
+    try {
+      // Get MBTI-specific context
+      const mbtiContext = this.getMBTIContext(request.mbtiType);
+      
+      // Create enhanced prompt
+      const enhancedPrompt = this.createEnhancedPrompt(request, mbtiContext);
+
+      // Call AI service (placeholder - integrate with actual AI service)
+      const aiResponse = await this.callAIService(enhancedPrompt);
+
+      // Process and validate response
+      const processedContent = this.processAIResponse(aiResponse, request);
+
+      return processedContent;
+
+    } catch (error) {
+      logger.error('❌ Failed to generate AI content:', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Krijg MBTI-specifieke context
+   */
+  private getMBTIContext(mbtiType: string): any {
+    const mbtiContexts = {
+      'INTJ': {
+        strengths: ['Strategic thinking', 'Independence', 'Determination'],
+        challenges: ['Perfectionism', 'Impatience', 'Insensitivity'],
+        preferences: ['Structure', 'Efficiency', 'Long-term planning']
+      },
+      'INTP': {
+        strengths: ['Analytical thinking', 'Flexibility', 'Originality'],
+        challenges: ['Disorganization', 'Insensitivity', 'Impatience'],
+        preferences: ['Logic', 'Autonomy', 'Theoretical concepts']
+      },
+      'ENTJ': {
+        strengths: ['Natural leadership', 'Confidence', 'Efficiency'],
+        challenges: ['Impatience', 'Stubbornness', 'Coldness'],
+        preferences: ['Control', 'Results', 'Strategic planning']
+      },
+      'ENTP': {
+        strengths: ['Quick thinking', 'Charisma', 'Energetic'],
+        challenges: ['Insensitive', 'Intolerant', 'Impatient'],
+        preferences: ['Innovation', 'Debate', 'Flexibility']
+      },
+      'INFJ': {
+        strengths: ['Creative', 'Insightful', 'Inspiring'],
+        challenges: ['Sensitive', 'Extremely private', 'Perfectionist'],
+        preferences: ['Meaning', 'Authenticity', 'Personal growth']
+      },
+      'INFP': {
+        strengths: ['Idealistic', 'Loyal', 'Curious'],
+        challenges: ['Overly idealistic', 'Too altruistic', 'Impractical'],
+        preferences: ['Values', 'Harmony', 'Personal development']
+      },
+      'ENFJ': {
+        strengths: ['Charismatic', 'Natural leaders', 'Passionate'],
+        challenges: ['Overly idealistic', 'Too selfless', 'Sensitive'],
+        preferences: ['Helping others', 'Harmony', 'Personal growth']
+      },
+      'ENFP': {
+        strengths: ['Enthusiastic', 'Creative', 'Social'],
+        challenges: ['Overly idealistic', 'Disorganized', 'Overly accommodating'],
+        preferences: ['Possibilities', 'Inspiration', 'Flexibility']
+      },
+      'ISTJ': {
+        strengths: ['Honest', 'Direct', 'Strong-willed'],
+        challenges: ['Stubborn', 'Insensitive', 'Always by the book'],
+        preferences: ['Order', 'Structure', 'Reliability']
+      },
+      'ISFJ': {
+        strengths: ['Supportive', 'Reliable', 'Patient'],
+        challenges: ['Humble', 'Shy', 'Represses feelings'],
+        preferences: ['Harmony', 'Support', 'Tradition']
+      },
+      'ESTJ': {
+        strengths: ['Dedicated', 'Strong-willed', 'Direct'],
+        challenges: ['Inflexible', 'Uncomfortable with unconventional situations'],
+        preferences: ['Structure', 'Order', 'Efficiency']
+      },
+      'ESFJ': {
+        strengths: ['Strong practical skills', 'Loyal', 'Sensitive'],
+        challenges: ['Worried about social status', 'Vulnerable to criticism'],
+        preferences: ['Harmony', 'Support', 'Tradition']
+      },
+      'ISTP': {
+        strengths: ['Optimistic', 'Creative', 'Practical'],
+        challenges: ['Stubborn', 'Insensitive', 'Private'],
+        preferences: ['Freedom', 'Action', 'Practicality']
+      },
+      'ISFP': {
+        strengths: ['Sensitive', 'Loyal', 'Imaginative'],
+        challenges: ['Overly competitive', 'Unpredictable'],
+        preferences: ['Harmony', 'Authenticity', 'Flexibility']
+      },
+      'ESTP': {
+        strengths: ['Bold', 'Rational', 'Practical'],
+        challenges: ['Sensitive', 'Risk-prone', 'Impatient'],
+        preferences: ['Action', 'Results', 'Flexibility']
+      },
+      'ESFP': {
+        strengths: ['Bold', 'Original', 'Aesthetic'],
+        challenges: ['Sensitive', 'Conflict-averse', 'Easily stressed'],
+        preferences: ['Harmony', 'Fun', 'Spontaneity']
+      }
+    };
+
+    return mbtiContexts[mbtiType] || {};
+  }
+
+  /**
+   * Maak enhanced prompt voor AI
+   */
+  private createEnhancedPrompt(request: MBTIContentGenerationRequest, mbtiContext: any): string {
+    return `
+Generate personalized ${request.contentType} content for ${request.mbtiType} personality type.
+
+MBTI Context:
+- Strengths: ${mbtiContext.strengths?.join(', ')}
+- Challenges: ${mbtiContext.challenges?.join(', ')}
+- Preferences: ${mbtiContext.preferences?.join(', ')}
+
+Content Requirements:
+- Type: ${request.contentType}
+- Category: ${request.category}
+- Quality Threshold: ${request.qualityThreshold || 0.8}
+
+User Prompt: ${request.prompt}
+
+Context: ${JSON.stringify(request.context || {})}
+
+Please generate content that is:
+1. Highly relevant to ${request.mbtiType} personality
+2. Actionable and practical
+3. Engaging and motivating
+4. Aligned with their strengths and addresses their challenges
+5. Quality score above ${request.qualityThreshold || 0.8}
+
+Return in JSON format with: title, description, content, qualityScore, relevanceScore
+    `.trim();
+  }
+
+  /**
+   * Roep AI service aan (placeholder)
+   */
+  private async callAIService(prompt: string): Promise<any> {
+    // Placeholder - integrate with actual AI service
+    // This would call OpenAI, Claude, or other AI provider
+    return {
+      title: "Generated Content Title",
+      description: "Generated content description",
+      content: {
+        main: "Generated content body",
+        tips: ["Tip 1", "Tip 2", "Tip 3"],
+        exercises: ["Exercise 1", "Exercise 2"]
+      },
+      qualityScore: 0.85,
+      relevanceScore: 0.90
+    };
+  }
+
+  /**
+   * Verwerk AI response
+   */
+  private processAIResponse(aiResponse: any, request: MBTIContentGenerationRequest): any {
+    try {
+      // Validate and process AI response
+      const processedContent = {
+        title: aiResponse.title || `Generated ${request.contentType} for ${request.mbtiType}`,
+        description: aiResponse.description || "AI-generated content",
+        content: aiResponse.content || {},
+        qualityScore: Math.min(Math.max(aiResponse.qualityScore || 0.8, 0), 1),
+        relevanceScore: Math.min(Math.max(aiResponse.relevanceScore || 0.8, 0), 1)
+      };
+
+      // Validate quality threshold
+      if (processedContent.qualityScore < (request.qualityThreshold || 0.8)) {
+        logger.warn(`⚠️ Generated content quality score ${processedContent.qualityScore} below threshold ${request.qualityThreshold || 0.8}`);
+      }
+
+      return processedContent;
+
+    } catch (error) {
+      logger.error('❌ Failed to process AI response:', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Krijg content aanbevelingen voor MBTI type
+   */
+  async getContentRecommendations(mbtiType: string, limit: number = 5): Promise<MBTIContentRecommendation[]> {
+    try {
+      logger.info(`🔄 Getting content recommendations for ${mbtiType}`);
+
+      const content = await this.loadMBTIContent({
+        mbtiType,
+        limit,
+        qualityScore: 0.7
+      });
+
+      const recommendations: MBTIContentRecommendation[] = content.map(item => ({
+        mbtiType: item.mbtiType,
+        contentType: item.contentType,
+        category: item.category,
+        title: item.title,
+        description: item.description,
+        content: item.content,
+        qualityScore: item.qualityScore,
+        relevanceScore: item.relevanceScore,
+        personalizedFor: item.personalizedFor
+      }));
+
+      logger.info(`✅ Found ${recommendations.length} content recommendations for ${mbtiType}`);
+      return recommendations;
+
+    } catch (error) {
+      logger.error('❌ Failed to get content recommendations:', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Laad MBTI content van Supabase
+   */
+  async loadMBTIContentFromSupabase(filter: MBTIContentFilter = {}): Promise<number> {
+    try {
+      logger.info('🔄 Loading MBTI content from Supabase...');
+
+      let query = supabase.from('mbti_content').select('*');
+
+      // Apply filters
+      if (filter.mbtiType) {
+        query = query.eq('mbti_type', filter.mbtiType);
+      }
+
+      if (filter.contentType) {
+        query = query.eq('content_type', filter.contentType);
+      }
+
+      if (filter.category) {
+        query = query.eq('category', filter.category);
+      }
+
+      if (filter.qualityScore) {
+        query = query.gte('quality_score', filter.qualityScore);
+      }
+
+      if (filter.dateRange) {
+        query = query.gte('created_at', filter.dateRange.start.toISOString())
+                     .lte('created_at', filter.dateRange.end.toISOString());
+      }
+
+      if (filter.limit) {
+        query = query.limit(filter.limit);
+      }
+
+      if (filter.offset) {
+        query = query.range(filter.offset, filter.offset + (filter.limit || 100) - 1);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        throw new Error(`Supabase query failed: ${error.message}`);
+      }
+
+      if (!data || data.length === 0) {
+        logger.info('ℹ️ No MBTI content found in Supabase');
+        return 0;
+      }
+
+      // Store in WatermelonDB
+      let loadedCount = 0;
+      await database.write(async () => {
+        for (const contentData of data) {
+          try {
+            await database.collections.get<MbtiContent>('mbti_content').create(content => {
+              content.mbtiType = contentData.mbti_type;
+              content.contentType = contentData.content_type;
+              content.category = contentData.category;
+              content.title = contentData.title;
+              content.description = contentData.description;
+              content.content = contentData.content;
+              content.qualityScore = contentData.quality_score;
+              content.relevanceScore = contentData.relevance_score;
+              content.personalizedFor = contentData.personalized_for;
+              content.createdAt = new Date(contentData.created_at);
+              content.updatedAt = new Date(contentData.updated_at);
+            });
+            loadedCount++;
+          } catch (error) {
+            logger.warn(`⚠️ Failed to create MBTI content ${contentData.id}:`, error);
+          }
+        }
+      });
+
+      logger.info(`✅ Loaded ${loadedCount} MBTI content items from Supabase`);
+      return loadedCount;
+
+    } catch (error) {
+      logger.error('❌ Failed to load MBTI content from Supabase:', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Krijg beschikbare MBTI types
+   */
+  getAvailableMBTITypes(): string[] {
+    return [...this.MBTI_TYPES];
+  }
+
+  /**
+   * Krijg beschikbare content types
+   */
+  getAvailableContentTypes(): string[] {
+    return [...this.CONTENT_TYPES];
+  }
+
+  /**
+   * Krijg beschikbare categories
+   */
+  getAvailableCategories(): string[] {
+    return [...this.CONTENT_CATEGORIES];
+  }
+}
+
+// Export singleton instance
+export const mbtiContentSystemService = MBTIContentSystemService.getInstance();

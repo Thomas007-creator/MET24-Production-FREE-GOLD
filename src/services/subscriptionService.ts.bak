@@ -1,0 +1,261 @@
+import { 
+import { Q } from '@nozbe/watermelondb';
+  subscriptionPlansCollection, 
+  userSubscriptionsCollection, 
+  paymentTransactionsCollection,
+  upgradeFlowEventsCollection,
+  database 
+} from '../database';
+import { logger } from '../utils/logger';
+
+export interface SubscriptionPlanData {
+  planId: string;
+  name: string;
+  description?: string;
+  priceWeekly: number;
+  priceMonthly?: number;
+  durationDays: number;
+  features: string[];
+  isActive: boolean;
+  isFeatured: boolean;
+}
+
+export interface PaymentData {
+  userId: string;
+  subscriptionId: string;
+  transactionId: string;
+  amount: number;
+  currency: string;
+  paymentMethod: string;
+  paymentProvider: string;
+  receiptUrl?: string;
+}
+
+export class SubscriptionService {
+  // Initialize default subscription plans
+  static async initializeDefaultPlans(): Promise<void> {
+    try {
+      const existingPlans = await subscriptionPlansCollection.query().fetch();
+      
+      if (existingPlans.length === 0) {
+        const defaultPlans: SubscriptionPlanData[] = [
+          {
+            planId: 'weekly',
+            name: '1 week',
+            description: 'Perfect om te proberen',
+            priceWeekly: 14.99,
+            durationDays: 7,
+            features: ['Alle premium features', 'AI coaching', 'MBTI communities'],
+            isActive: true,
+            isFeatured: true
+          },
+          {
+            planId: 'monthly',
+            name: '1 maand',
+            description: 'Meest populair',
+            priceWeekly: 6.87,
+            priceMonthly: 27.48,
+            durationDays: 30,
+            features: ['Alle premium features', 'AI coaching', 'MBTI communities', 'Offline content'],
+            isActive: true,
+            isFeatured: false
+          },
+          {
+            planId: 'sixMonth',
+            name: '6 maanden',
+            description: 'Beste waarde',
+            priceWeekly: 3.42,
+            priceMonthly: 13.68,
+            durationDays: 180,
+            features: ['Alle premium features', 'AI coaching', 'MBTI communities', 'Offline content', 'Priority support'],
+            isActive: true,
+            isFeatured: false
+          }
+        ];
+
+        await database.write(async () => {
+          for (const planData of defaultPlans) {
+            await subscriptionPlansCollection.create((plan) => {
+              (plan as any).planId = planData.planId;
+              (plan as any).name = planData.name;
+              (plan as any).description = planData.description;
+              (plan as any).priceWeekly = planData.priceWeekly;
+              (plan as any).priceMonthly = planData.priceMonthly;
+              (plan as any).durationDays = planData.durationDays;
+              (plan as any).features = JSON.stringify(planData.features);
+              (plan as any).isActive = planData.isActive;
+              (plan as any).isFeatured = planData.isFeatured;
+            });
+          }
+        });
+
+        logger.info('Default subscription plans initialized');
+      }
+    } catch (error) {
+      logger.error('Failed to initialize default plans', { error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
+  // Get all active subscription plans
+  static async getActivePlans(): Promise<SubscriptionPlanData[]> {
+    try {
+      const plans = await subscriptionPlansCollection
+        .query(Q.where('is_active', true))
+        .fetch();
+
+      return plans.map(plan => ({
+        planId: (plan as any).planId,
+        name: (plan as any).name,
+        description: (plan as any).description,
+        priceWeekly: (plan as any).priceWeekly,
+        priceMonthly: (plan as any).priceMonthly,
+        durationDays: (plan as any).durationDays,
+        features: (plan as any).getFeaturesArray ? (plan as any).getFeaturesArray() : [],
+        isActive: (plan as any).isActive,
+        isFeatured: (plan as any).isFeatured
+      }));
+    } catch (error) {
+      logger.error('Failed to get active plans', { error: error instanceof Error ? error.message : String(error) });
+      return [];
+    }
+  }
+
+  // Get user's current subscription
+  static async getUserSubscription(userId: string): Promise<any> {
+    try {
+      const subscription = await userSubscriptionsCollection
+        .query(
+          Q.where('user_id', userId),
+          Q.where('status', 'active')
+        )
+        .fetch();
+
+      return subscription.length > 0 ? subscription[0] : null;
+    } catch (error) {
+      logger.error('Failed to get user subscription', { error: error instanceof Error ? error.message : String(error) });
+      return null;
+    }
+  }
+
+  // Create new subscription
+  static async createSubscription(
+    userId: string, 
+    planId: string, 
+    paymentData: PaymentData
+  ): Promise<boolean> {
+    try {
+      const plan = await subscriptionPlansCollection
+        .query(Q.where('plan_id', planId))
+        .fetch();
+
+      if (plan.length === 0) {
+        throw new Error('Plan not found');
+      }
+
+      const selectedPlan = plan[0];
+      const startDate = Date.now();
+      const endDate = startDate + ((selectedPlan as any).durationDays * 24 * 60 * 60 * 1000);
+
+      await database.write(async () => {
+        // Create user subscription
+        const subscription = await userSubscriptionsCollection.create((sub) => {
+          (sub as any).userId = userId;
+          (sub as any).planId = planId;
+          (sub as any).subscriptionId = paymentData.subscriptionId;
+          (sub as any).status = 'active';
+          (sub as any).startDate = startDate;
+          (sub as any).endDate = endDate;
+          (sub as any).autoRenew = true;
+          (sub as any).paymentMethod = paymentData.paymentMethod;
+        });
+
+        // Create payment transaction
+        await paymentTransactionsCollection.create((transaction) => {
+          (transaction as any).userId = userId;
+          (transaction as any).subscriptionId = subscription.id;
+          (transaction as any).transactionId = paymentData.transactionId;
+          (transaction as any).amount = paymentData.amount;
+          (transaction as any).currency = paymentData.currency;
+          (transaction as any).status = 'completed';
+          (transaction as any).paymentMethod = paymentData.paymentMethod;
+          (transaction as any).paymentProvider = paymentData.paymentProvider;
+          (transaction as any).receiptUrl = paymentData.receiptUrl;
+        });
+
+        // Track upgrade completion
+        await upgradeFlowEventsCollection.create((event) => {
+          (event as any).userId = userId;
+          (event as any).eventType = 'upgrade_completed';
+          (event as any).planId = planId;
+          (event as any).step = 'success';
+          (event as any).metadata = JSON.stringify({
+            subscriptionId: subscription.id,
+            transactionId: paymentData.transactionId,
+            timestamp: new Date().toISOString()
+          });
+        });
+      });
+
+      logger.info('Subscription created successfully', { userId, planId });
+      return true;
+    } catch (error) {
+      logger.error('Failed to create subscription', { error: error instanceof Error ? error.message : String(error) });
+      return false;
+    }
+  }
+
+  // Track upgrade flow event
+  static async trackUpgradeEvent(
+    userId: string,
+    eventType: string,
+    step: string,
+    planId?: string,
+    metadata?: Record<string, any>
+  ): Promise<void> {
+    try {
+      await database.write(async () => {
+        await upgradeFlowEventsCollection.create((event) => {
+          (event as any).userId = userId;
+          (event as any).eventType = eventType;
+          (event as any).step = step;
+          (event as any).planId = planId;
+          (event as any).metadata = metadata ? JSON.stringify(metadata) : undefined;
+          (event as any).sessionId = `upgrade_${Date.now()}`;
+        });
+      });
+    } catch (error) {
+      logger.error('Failed to track upgrade event', { error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
+  // Get upgrade flow analytics
+  static async getUpgradeAnalytics(userId?: string): Promise<any> {
+    try {
+      let query = upgradeFlowEventsCollection.query();
+      
+      if (userId) {
+        query = query.extend(Q.where('user_id', userId));
+      }
+
+      const events = await query.fetch();
+      
+      const analytics = {
+        totalEvents: events.length,
+        pageViews: events.filter(e => (e as any).eventType === 'page_view').length,
+        planSelections: events.filter(e => (e as any).eventType === 'plan_selected').length,
+        paymentStarts: events.filter(e => (e as any).eventType === 'payment_started').length,
+        completedUpgrades: events.filter(e => (e as any).eventType === 'upgrade_completed').length,
+        conversionRate: 0
+      };
+
+      if (analytics.pageViews > 0) {
+        analytics.conversionRate = (analytics.completedUpgrades / analytics.pageViews) * 100;
+      }
+
+      return analytics;
+    } catch (error) {
+      logger.error('Failed to get upgrade analytics', { error: error instanceof Error ? error.message : String(error) });
+      return null;
+    }
+  }
+}

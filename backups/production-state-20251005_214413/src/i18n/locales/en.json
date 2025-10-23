@@ -1,0 +1,151 @@
+{
+  "common": {
+    "welcome": "Welcome back, {{userName}}!",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "back": "Back",
+    "next": "Next",
+    "home": "Home",
+    "settings": "Settings"
+  },
+  "navigation": {
+    "chat": "Chat",
+    "communities": "Communities",
+    "challenges": "Challenges",
+    "analytics": "Analytics", 
+    "profile": "Profile",
+    "wellness": "Wellness",
+    "ai": "AI Coaching"
+  },
+  "mbti": {
+    "types": {
+      "INTJ": {
+        "title": "INTJ — The Strategic Visionary",
+        "description": "Analytical, future-focused and independent",
+        "summary": "Strategic, innovative, determined"
+      },
+      "ENFP": {
+        "title": "ENFP — The Enthusiastic Champion",
+        "description": "Energetic, creative and people-oriented", 
+        "summary": "Enthusiastic, creative, inspiring"
+      },
+      "ISFJ": {
+        "title": "ISFJ — The Caring Protector",
+        "description": "Caring, reliable and supportive",
+        "summary": "Caring, loyal, practical"
+      },
+      "ESTP": {
+        "title": "ESTP — The Energetic Entrepreneur", 
+        "description": "Spontaneous, energetic and action-oriented",
+        "summary": "Spontaneous, practical, flexible"
+      }
+    }
+  },
+  "community": {
+    "title": "👥 MBTI Communities",
+    "welcome": "Welcome {{userName}}! Connect with other {{mbtiType}} types and share your insights",
+    "live_platform": "🚀 Live Community Platform",
+    "live_description": "Chat, share and learn from the full MET24 community via our Discourse platform",
+    "real_time": "Real-time chat",
+    "buttons": {
+      "mbti_chat": "💬 {{mbtiType}} Chat",
+      "all_communities": "👥 All Communities",
+      "challenges": "🎯 Challenges"
+    },
+    "integration_notice": "🔗 Seamlessly integrated: Your MET24 profile and progress are automatically linked"
+  },
+  "discourse": {
+    "chat": {
+      "title": "💬 {{mbtiType}} Live Chat",
+      "description": "Connect with other {{mbtiType}} types"
+    },
+    "communities": {
+      "title": "👥 All Communities",
+      "description": "Discover all MBTI communities"
+    },
+    "challenges": {
+      "title": "🎯 Daily Challenges",
+      "description": "Join community challenges"
+    }
+  },
+  "onboarding": {
+    "welcome": "Welcome to MET24",
+    "steps": {
+      "personal_info": "Personal Information",
+      "mbti_test": "MBTI Personality Test",
+      "wellness": "Wellness Assessment", 
+      "ai_coaching": "AI Coaching Setup",
+      "complete": "Onboarding Complete"
+    },
+    "mbti_questions": {
+      "intro": "Answer these questions to determine your MBTI type",
+      "question_1": "I prefer to recharge by spending time alone.",
+      "question_2": "I focus more on facts and details than patterns and possibilities.",
+      "question_3": "I usually make decisions based on logic rather than feeling.",
+      "question_4": "I like to plan things and prefer structure.",
+      "question_5": "I feel more energized after meeting new people.",
+      "question_6": "I rely on intuition to see future possibilities.",
+      "question_7": "In discussions, I seek truth even if it's uncomfortable.",
+      "question_8": "I find flexibility and openness more important than strict planning.",
+      "question_9": "I often notice details that others miss.",
+      "question_10": "I let my feelings and values influence my decisions."
+    },
+    "likert_scale": {
+      "strongly_disagree": "Strongly Disagree",
+      "disagree": "Disagree",
+      "neutral": "Neutral", 
+      "agree": "Agree",
+      "strongly_agree": "Strongly Agree"
+    }
+  },
+  "wellness": {
+    "title": "🏥 Holistic Wellness",
+    "questions": {
+      "sleep": "How regularly do you get enough sleep?",
+      "fatigue": "How often do you experience daytime fatigue?",
+      "exercise": "How often do you exercise moderately/intensively per week?",
+      "stress": "How well can you regulate your emotions under stress?",
+      "meaning": "How often do you experience meaning in daily activities?",
+      "social_support": "How much social support do you experience?",
+      "physical_complaints": "How often do you experience physical complaints that affect functioning?",
+      "goal_oriented": "How often do you act goal-oriented?"
+    }
+  },
+  "ai_coaching": {
+    "title": "🤖 AI Coaching",
+    "description": "Personal AI coaching adapted to your {{mbtiType}} type",
+    "session_frequency": "How often would you like AI coaching sessions?",
+    "frequencies": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "as_needed": "On Request"
+    },
+    "goals": {
+      "self_awareness": "Self-awareness",
+      "stress_management": "Stress Management",
+      "goal_achievement": "Goal Achievement", 
+      "relationship_skills": "Relationship Skills"
+    }
+  },
+  "settings": {
+    "title": "⚙️ Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "languages": {
+      "nl": "Nederlands",
+      "en": "English",
+      "de": "Deutsch",
+      "fr": "Français"
+    },
+    "themes": {
+      "light": "Light",
+      "dark": "Dark", 
+      "auto": "Auto"
+    }
+  }
+}

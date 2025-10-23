@@ -1,0 +1,154 @@
+{
+  "common": {
+    "welcome": "{{userName}}さん、おかえりなさい！",
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "continue": "続行",
+    "back": "戻る",
+    "next": "次へ",
+    "home": "ホーム",
+    "settings": "設定"
+  },
+  "navigation": {
+    "chat": "チャット",
+    "communities": "コミュニティ",
+    "challenges": "チャレンジ",
+    "analytics": "分析",
+    "profile": "プロフィール",
+    "wellness": "ウェルネス",
+    "ai": "AIコーチング"
+  },
+  "mbti": {
+    "types": {
+      "INTJ": {
+        "title": "INTJ — 戦略的ビジョナリー",
+        "description": "分析的で未来志向、独立性が高い",
+        "summary": "戦略的、革新的、決断力がある"
+      },
+      "ENFP": {
+        "title": "ENFP — 熱意あふれるチャンピオン",
+        "description": "エネルギッシュで創造的、人を重視する",
+        "summary": "熱意的、創造的、インスピレーションを与える"
+      },
+      "ISFJ": {
+        "title": "ISFJ — 思いやりのある保護者",
+        "description": "思いやりがあり、信頼でき、支援的",
+        "summary": "思いやりがある、忠実、実用的"
+      },
+      "ESTP": {
+        "title": "ESTP — エネルギッシュな起業家",
+        "description": "自発的でエネルギッシュ、行動重視",
+        "summary": "自発的、実用的、柔軟"
+      }
+    }
+  },
+  "community": {
+    "title": "👥 MBTIコミュニティ",
+    "welcome": "{{userName}}さん、ようこそ！他の{{mbtiType}}タイプの方々とつながり、アイデアを共有しましょう",
+    "live_platform": "🚀 ライブコミュニティプラットフォーム",
+    "live_description": "MET24コミュニティ全体とDiscourseプラットフォームを通じて議論、共有、学習",
+    "real_time": "リアルタイムチャット",
+    "buttons": {
+      "mbti_chat": "💬 {{mbtiType}}チャット",
+      "all_communities": "👥 すべてのコミュニティ",
+      "challenges": "🎯 チャレンジ"
+    },
+    "integration_notice": "🔗 完全統合：あなたのMET24プロフィールと進捗が自動的にリンクされます"
+  },
+  "discourse": {
+    "chat": {
+      "title": "💬 {{mbtiType}}ライブチャット",
+      "description": "他の{{mbtiType}}タイプの方々とつながる"
+    },
+    "communities": {
+      "title": "👥 すべてのコミュニティ",
+      "description": "すべてのMBTIコミュニティを発見"
+    },
+    "challenges": {
+      "title": "🎯 デイリーチャレンジ",
+      "description": "コミュニティチャレンジに参加"
+    }
+  },
+  "onboarding": {
+    "welcome": "MET24へようこそ",
+    "steps": {
+      "personal_info": "個人情報",
+      "mbti_test": "MBTI性格テスト",
+      "wellness": "ウェルネス評価",
+      "ai_coaching": "AIコーチング設定",
+      "complete": "統合完了"
+    },
+    "mbti_questions": {
+      "intro": "これらの質問に答えて、あなたのMBTIタイプを判定しましょう",
+      "question_1": "一人で過ごす時間で元気を取り戻すことを好みます。",
+      "question_2": "パターンや可能性よりも事実や詳細に焦点を当てることが多いです。",
+      "question_3": "一般的に感情よりも論理に基づいて決定を下します。",
+      "question_4": "物事を計画し、構造を好みます。",
+      "question_5": "新しい人に会った後、より元気になったと感じます。",
+      "question_6": "将来の可能性を見るために直感を信頼します。",
+      "question_7": "議論では、不快であっても真実を求めます。",
+      "question_8": "厳格な計画よりも柔軟性と開放性が重要です。",
+      "question_9": "他の人が見落とす詳細によく気づきます。",
+      "question_10": "決定において感情と価値観の影響を受けます。"
+    },
+    "likert_scale": {
+      "strongly_disagree": "強く反対",
+      "disagree": "反対",
+      "neutral": "どちらでもない",
+      "agree": "同意",
+      "strongly_agree": "強く同意"
+    }
+  },
+  "wellness": {
+    "title": "🏥 ホリスティックウェルネス",
+    "questions": {
+      "sleep": "十分な睡眠をとる頻度はどのくらいですか？",
+      "fatigue": "日中に疲労を感じる頻度はどのくらいですか？",
+      "exercise": "週に何回中程度から激しい運動をしますか？",
+      "stress": "ストレス下で感情をうまく調整できる程度は？",
+      "meaning": "日常活動に意味を感じる頻度は？",
+      "social_support": "どの程度のソーシャルサポートを感じますか？",
+      "physical_complaints": "機能に影響する身体的不調を感じる頻度は？",
+      "goal_oriented": "目標志向的に行動する頻度は？"
+    }
+  },
+  "ai_coaching": {
+    "title": "🤖 AIコーチング",
+    "description": "あなたの{{mbtiType}}タイプに適応したパーソナルAIコーチング",
+    "session_frequency": "AIコーチングセッションの希望頻度は？",
+    "frequencies": {
+      "daily": "毎日",
+      "weekly": "週1回",
+      "as_needed": "必要に応じて"
+    },
+    "goals": {
+      "self_awareness": "自己認識",
+      "stress_management": "ストレス管理",
+      "goal_achievement": "目標達成",
+      "relationship_skills": "人間関係スキル"
+    }
+  },
+  "settings": {
+    "title": "⚙️ 設定",
+    "language": "言語",
+    "theme": "テーマ",
+    "notifications": "通知",
+    "privacy": "プライバシー",
+    "languages": {
+      "nl": "Nederlands",
+      "en": "English",
+      "de": "Deutsch",
+      "es": "Español",
+      "fr": "Français",
+      "ja": "日本語",
+      "ko": "한국어"
+    },
+    "themes": {
+      "light": "ライト",
+      "dark": "ダーク",
+      "auto": "自動"
+    }
+  }
+}

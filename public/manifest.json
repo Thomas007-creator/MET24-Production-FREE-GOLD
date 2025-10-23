@@ -1,0 +1,200 @@
+{
+  "name": "MET24 - Your Future Self",
+  "short_name": "MET24",
+  "description": "MET24 - Personal Development Platform with MBTI Assessment, V3 Features, and AI Coaching",
+  "version": "3.0.0-core",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#6366f1",
+  "background_color": "#ffffff",
+  "scope": "/",
+  "lang": "nl",
+  "dir": "ltr",
+  "categories": ["lifestyle", "education", "productivity"],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop-main.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "MET24 Main Dashboard"
+    },
+    {
+      "src": "/screenshots/mobile-main.png", 
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "MET24 Mobile Dashboard"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-96x96.png",
+      "sizes": "96x96", 
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "MBTI Assessment",
+      "short_name": "MBTI",
+      "description": "Take your MBTI personality assessment",
+      "url": "/mbti-assessment",
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Active Imagination",
+      "short_name": "Imagination",
+      "description": "Start an active imagination session",
+      "url": "/active-imagination",
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Enhanced Journaling",
+      "short_name": "Journal",
+      "description": "Write in your enhanced journal",
+      "url": "/enhanced-journaling",
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Challenges",
+      "short_name": "Challenges",
+      "description": "View and join challenges",
+      "url": "/challenges",
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Levensgebieden",
+      "short_name": "Life Areas",
+      "description": "Explore life areas",
+      "url": "/levensgebieden",
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+met24",
+      "url": "/?action=%s"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "/import-data",
+      "accept": {
+        "application/json": [".json"],
+        "text/csv": [".csv"]
+      }
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "file",
+          "accept": ["image/*", "text/*"]
+        }
+      ]
+    }
+  },
+  "features": [
+    "V3 Features",
+    "MBTI Assessment", 
+    "Active Imagination",
+    "Enhanced Journaling",
+    "Challenges",
+    "Levensgebieden",
+    "Offline Support",
+    "PWA Functionality"
+  ],
+  "deployment_phase": "1-core",
+  "v3_features": [
+    "Active Imagination V3",
+    "Enhanced Journaling V3", 
+    "Challenges V3",
+    "Levensgebieden V3",
+    "Database V14"
+  ]
+}

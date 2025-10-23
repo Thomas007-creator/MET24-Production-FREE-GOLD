@@ -1,0 +1,142 @@
+{
+  "timestamp": "2025-10-19T12:05:28.965Z",
+  "config": {
+    "maxPropsPerComponent": 8,
+    "maxBooleanProps": 3,
+    "monolithicComponentThreshold": 100,
+    "compositionPatterns": [
+      "Provider",
+      "Context",
+      "Compound",
+      "Render Props"
+    ]
+  },
+  "violations": [
+    {
+      "type": "MONOLITHIC_COMPONENT",
+      "file": "ComponentShowcase.tsx",
+      "component": "ComponentShowcase",
+      "lines": 228,
+      "threshold": 100,
+      "severity": "MEDIUM",
+      "message": "Component is te groot (228 lijnen)"
+    }
+  ],
+  "suggestions": [
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "BigButton.refactored.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "BigButton.test.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "BigButton.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ComponentShowcase.refactored.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ComponentShowcase.test.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "DesignSystem.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "DesignSystemFallback.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "GlassCard.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "IconButton.refactored.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "IconButton.test.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "NavigationFooter.refactored.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "NavigationFooter.test.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ThemePill.refactored.tsx",
+      "priority": "LOW",
+      "patterns": 2,
+      "message": "Goede compositie patronen gevonden (2)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ThemePill.test.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    },
+    {
+      "type": "GOOD_COMPOSITION_DETECTED",
+      "file": "ThemePill.tsx",
+      "priority": "LOW",
+      "patterns": 1,
+      "message": "Goede compositie patronen gevonden (1)"
+    }
+  ],
+  "score": {
+    "score": 0,
+    "totalFiles": 1,
+    "violations": {
+      "high": 0,
+      "medium": 1,
+      "total": 1
+    },
+    "suggestions": 15
+  }
+}

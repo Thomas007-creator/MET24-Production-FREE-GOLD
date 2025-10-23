@@ -1,0 +1,122 @@
+import { HogerZelfAIService } from './hogerZelfAIService';
+import { logger } from '../utils/logger';
+
+export class OptimizedHogerZelfAIService extends HogerZelfAIService {
+  
+  // Betere prompt generation met optimalisaties
+  generateOptimizedPrompt(userContext: any, mbtiType: string, userMessage: string): string {
+    const mbtiPrinciples = this.getMBTIPrinciples(mbtiType); // Je bestaande 16 archetypes
+    return `
+      Je bent een wijze gids gebaseerd op ${mbtiType} archetype met Beauty, Wisdom, Goodness.
+      Gebruik deze context: ${JSON.stringify(userContext)}.
+      Antwoord op: "${userMessage}".
+      Optimalisaties: Houd het kort (max 200 tokens), vermijd herhaling, focus op actionable inzichten.
+    `;
+  }
+
+  async orchestrateResponse(userContext: any, mbtiType: string, userMessage: string) {
+    const prompt = this.generateOptimizedPrompt(userContext, mbtiType, userMessage);
+    // Roep je bestaande AI provider aan (bijv. OpenAI met nieuw model)
+    // return await this.callAIProvider('openai', { model: 'gpt-4o', prompt }); // Upgrade naar gpt-4o
+    return 'AI response placeholder'; // Placeholder response
+  }
+
+  // Helper method om MBTI principles op te halen
+  private getMBTIPrinciples(mbtiType: string): any {
+    const archetype = this.getArchetypeForMBTI(mbtiType);
+    return {
+      archetype: archetype?.archetype || 'Universele Manifestatie',
+      theOneManifestation: archetype?.theOneManifestation || 'The One via universele principes',
+      higherSelf: archetype?.higherSelf || 'De universele gids naar zelfrealisatie',
+      optimalRealization: archetype?.optimalRealization || 'Harmonie met The One\'s universele orde'
+    };
+  }
+
+  // Helper method om archetype op te halen
+  private getArchetypeForMBTI(mbtiType: string): any {
+    const { MBTI_ARCHETYPES } = require('./hogerZelfAIService');
+    return MBTI_ARCHETYPES[mbtiType as keyof typeof MBTI_ARCHETYPES];
+  }
+}
+
+export default OptimizedHogerZelfAIService;
+
+export class OptimizedHogerZelfAIService extends HogerZelfAIService {
+  
+  // Betere prompt generation met optimalisaties
+  generateOptimizedPrompt(userContext: any, mbtiType: string, userMessage: string): string {
+    const mbtiPrinciples = this.getMBTIPrinciples(mbtiType); // Je bestaande 16 archetypes
+    return `
+      Je bent een wijze gids gebaseerd op ${mbtiType} archetype met Beauty, Wisdom, Goodness.
+      Gebruik deze context: ${JSON.stringify(userContext)}.
+      Antwoord op: "${userMessage}".
+      Optimalisaties: Houd het kort (max 200 tokens), vermijd herhaling, focus op actionable inzichten.
+    `;
+  }
+
+  async orchestrateResponse(userContext: any, mbtiType: string, userMessage: string) {
+    const prompt = this.generateOptimizedPrompt(userContext, mbtiType, userMessage);
+    // Roep je bestaande AI provider aan (bijv. OpenAI met nieuw model)
+    // return await this.callAIProvider('openai', { model: 'gpt-4o', prompt }); // Upgrade naar gpt-4o
+    return 'AI response placeholder'; // Placeholder response
+  }
+
+  // Helper method om MBTI principles op te halen
+  private getMBTIPrinciples(mbtiType: string): any {
+    const archetype = this.getArchetypeForMBTI(mbtiType);
+    return {
+      archetype: archetype?.archetype || 'Universele Manifestatie',
+      theOneManifestation: archetype?.theOneManifestation || 'The One via universele principes',
+      higherSelf: archetype?.higherSelf || 'De universele gids naar zelfrealisatie',
+      optimalRealization: archetype?.optimalRealization || 'Harmonie met The One\'s universele orde'
+    };
+  }
+
+  // Helper method om archetype op te halen
+  private getArchetypeForMBTI(mbtiType: string): any {
+    const { MBTI_ARCHETYPES } = require('./hogerZelfAIService');
+    return MBTI_ARCHETYPES[mbtiType as keyof typeof MBTI_ARCHETYPES];
+  }
+}
+
+export default OptimizedHogerZelfAIService;
+
+export class OptimizedHogerZelfAIService extends HogerZelfAIService {
+  
+  // Betere prompt generation met optimalisaties
+  generateOptimizedPrompt(userContext: any, mbtiType: string, userMessage: string): string {
+    const mbtiPrinciples = this.getMBTIPrinciples(mbtiType); // Je bestaande 16 archetypes
+    return `
+      Je bent een wijze gids gebaseerd op ${mbtiType} archetype met Beauty, Wisdom, Goodness.
+      Gebruik deze context: ${JSON.stringify(userContext)}.
+      Antwoord op: "${userMessage}".
+      Optimalisaties: Houd het kort (max 200 tokens), vermijd herhaling, focus op actionable inzichten.
+    `;
+  }
+
+  async orchestrateResponse(userContext: any, mbtiType: string, userMessage: string) {
+    const prompt = this.generateOptimizedPrompt(userContext, mbtiType, userMessage);
+    // Roep je bestaande AI provider aan (bijv. OpenAI met nieuw model)
+    // return await this.callAIProvider('openai', { model: 'gpt-4o', prompt }); // Upgrade naar gpt-4o
+    return 'AI response placeholder'; // Placeholder response
+  }
+
+  // Helper method om MBTI principles op te halen
+  private getMBTIPrinciples(mbtiType: string): any {
+    const archetype = this.getArchetypeForMBTI(mbtiType);
+    return {
+      archetype: archetype?.archetype || 'Universele Manifestatie',
+      theOneManifestation: archetype?.theOneManifestation || 'The One via universele principes',
+      higherSelf: archetype?.higherSelf || 'De universele gids naar zelfrealisatie',
+      optimalRealization: archetype?.optimalRealization || 'Harmonie met The One\'s universele orde'
+    };
+  }
+
+  // Helper method om archetype op te halen
+  private getArchetypeForMBTI(mbtiType: string): any {
+    const { MBTI_ARCHETYPES } = require('./hogerZelfAIService');
+    return MBTI_ARCHETYPES[mbtiType as keyof typeof MBTI_ARCHETYPES];
+  }
+}
+
+export default OptimizedHogerZelfAIService;

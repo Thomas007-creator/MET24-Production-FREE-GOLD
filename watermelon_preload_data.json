@@ -1,0 +1,880 @@
+{
+  "mbti_content": [
+    {
+      "id": "uuid-intj-intro",
+      "mbti_type": "INTJ",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "INTJ — De Strategische Denker",
+        "body": "INTJ's zijn analytisch, toekomstgericht en onafhankelijk. Ze waarderen efficiëntie en visie."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-intj-persona",
+      "mbti_type": "INTJ",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Strateeg, rationeel, toekomstgericht"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-intp-intro",
+      "mbti_type": "INTP",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "INTP — De Logische Denker",
+        "body": "INTP's zijn nieuwsgierig, theoretisch en conceptueel. Ze houden van ideeën en analyse."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-intp-persona",
+      "mbti_type": "INTP",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Analytisch, conceptueel, nieuwsgierig"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-entj-intro",
+      "mbti_type": "ENTJ",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "ENTJ — De Leider",
+        "body": "ENTJ's zijn directief, doelgericht en natuurlijke organisaties. Ze houden van strategische planning."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-entj-persona",
+      "mbti_type": "ENTJ",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Leiderschap, decisief, strategisch"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-entp-intro",
+      "mbti_type": "ENTP",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "ENTP — De Innovator",
+        "body": "ENTP's zijn vindingrijk, energiek en uitdager van ideeën. Ze houden van debat en vernieuwing."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-entp-persona",
+      "mbti_type": "ENTP",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Creatief, uitdagend, vindingrijk"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-infj-intro",
+      "mbti_type": "INFJ",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "INFJ — De Inspirator",
+        "body": "INFJ's zijn empathisch, visie-gedreven en idealistisch. Ze zoeken betekenis en authenticiteit."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-infj-persona",
+      "mbti_type": "INFJ",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Empathisch, visie, idealistisch"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-infp-intro",
+      "mbti_type": "INFP",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "INFP — De Bemiddelaar",
+        "body": "INFP's zijn idealistisch, loyaal aan hun waarden en creatief in zelfexpressie."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-infp-persona",
+      "mbti_type": "INFP",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Waarden-gericht, creatief, loyaal"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-enfj-intro",
+      "mbti_type": "ENFJ",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "ENFJ — De Mentor",
+        "body": "ENFJ's zijn charismatisch, relationeel en inspirerend; ze helpen anderen groeien."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-enfj-persona",
+      "mbti_type": "ENFJ",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Charismatisch, hulpvaardig, relationeel"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-enfp-intro",
+      "mbti_type": "ENFP",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "ENFP — De Kampioen",
+        "body": "ENFP's zijn energiek, imaginatief en waarderen verbinding en mogelijkheden."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-enfp-persona",
+      "mbti_type": "ENFP",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Enthousiast, creatief, verbindend"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-istj-intro",
+      "mbti_type": "ISTJ",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "ISTJ — De Inspecteur",
+        "body": "ISTJ's zijn betrouwbaar, praktisch en waarderen structuur en traditie."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-istj-persona",
+      "mbti_type": "ISTJ",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Betrouwbaar, praktisch, georganiseerd"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-isfj-intro",
+      "mbti_type": "ISFJ",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "ISFJ — De Beschermheer",
+        "body": "ISFJ's zijn zorgzaam, verantwoordelijk en behulpzaam; ze ondersteunen anderen loyaal."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-isfj-persona",
+      "mbti_type": "ISFJ",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Zorgzaam, loyaal, ondersteunend"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-estj-intro",
+      "mbti_type": "ESTJ",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "ESTJ — De Bestuurder",
+        "body": "ESTJ's zijn pragmatisch, beslissend en houden van orde en efficiëntie."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-estj-persona",
+      "mbti_type": "ESTJ",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Organiserend, beslissend, praktisch"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-esfj-intro",
+      "mbti_type": "ESFJ",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "ESFJ — De Verzamelaar",
+        "body": "ESFJ's zijn sociaal, attent en gericht op harmonie en ondersteuning."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-esfj-persona",
+      "mbti_type": "ESFJ",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Sociaal, ondersteunend, zorgzaam"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-istp-intro",
+      "mbti_type": "ISTP",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "ISTP — De Vakman",
+        "body": "ISTP's zijn praktisch, nieuwsgierig en vaardig in het oplossen van problemen hands-on."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-istp-persona",
+      "mbti_type": "ISTP",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Praktisch, hands-on, probleemoplosser"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-isfp-intro",
+      "mbti_type": "ISFP",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "ISFP — De Avonturier",
+        "body": "ISFP's zijn artistiek, spontaan en waarderen esthetiek en vrijheid."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-isfp-persona",
+      "mbti_type": "ISFP",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Artistiek, spontaan, vrijheidsgericht"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-estp-intro",
+      "mbti_type": "ESTP",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "ESTP — De Doener",
+        "body": "ESTP's zijn energiek, direct en houden van actie en onmiddellijke resultaten."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-estp-persona",
+      "mbti_type": "ESTP",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Actiegericht, direct, energiek"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-esfp-intro",
+      "mbti_type": "ESFP",
+      "kind": "intro_text",
+      "order_idx": 0,
+      "content": {
+        "title": "ESFP — De Entertainer",
+        "body": "ESFP's houden van het leven, zijn expressief en gericht op verbinding met anderen."
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "uuid-esfp-persona",
+      "mbti_type": "ESFP",
+      "kind": "persona_summary",
+      "order_idx": 1,
+      "content": {
+        "summary": "Expressief, sociaal, energiek"
+      },
+      "migration_seed": "mbti_v001",
+      "seed_immutable": true,
+      "created_by": "migration",
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    }
+  ],
+  "media_files": [
+    {
+      "id": "b234ff5e-6ebc-4a13-9da7-24d04a774761",
+      "storage_path": "mbti/ENFJ/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "663307d6-42cc-477c-a7f1-e0b28d2274af",
+      "storage_path": "mbti/ENFP/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "2da5b7d2-8bf2-47da-8c0a-1b89bab47f75",
+      "storage_path": "mbti/ENTJ/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "17070a7a-1968-47af-8a9a-27c10248a1c1",
+      "storage_path": "mbti/ENTP/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "f29c60f2-8c8f-4b38-a804-04ed6a8d8889",
+      "storage_path": "mbti/ESFJ/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "2789d2f3-49f8-45f1-9fce-d92ce17f7398",
+      "storage_path": "mbti/ESFP/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "b76b8512-23ba-44df-b804-c4156b1207a2",
+      "storage_path": "mbti/ESTJ/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "90cc47fb-3069-4bcd-ae6d-6d8999e77b51",
+      "storage_path": "mbti/ESTP/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "2ed57d91-b538-4684-8239-e5ce3d8c082f",
+      "storage_path": "mbti/INFJ/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "85ad3e1d-2bc8-4dee-b278-60ee21a10bfb",
+      "storage_path": "mbti/INFP/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "913ec2c2-16f5-417f-878b-421d8c1da0d1",
+      "storage_path": "mbti/INTJ/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "38c9da5f-54d2-49f1-86c0-8486689c846e",
+      "storage_path": "mbti/INTP/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "f639b88c-a8a5-4c16-b2e7-07fdb38410b9",
+      "storage_path": "mbti/ISFJ/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "5b2c199b-ff53-42fa-a17c-0a4d149d241b",
+      "storage_path": "mbti/ISFP/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "e9b756a0-14fe-4931-bd86-2b0c224e7f25",
+      "storage_path": "mbti/ISTJ/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    },
+    {
+      "id": "d4e5a103-bc36-4308-98e7-3a38bf298a1c",
+      "storage_path": "mbti/ISTP/videos/preload/intro.mp4",
+      "url": null,
+      "mime": "video/mp4",
+      "size": 0,
+      "status": "uploaded",
+      "transcode_meta": null,
+      "created_at": "2025-09-13T00:14:09.559216+00:00",
+      "updated_at": "2025-09-13T00:14:09.559216+00:00"
+    }
+  ],
+  "mbti_groups": {
+    "INTJ": {
+      "intro_text": {
+        "title": "INTJ — De Strategische Denker",
+        "body": "INTJ's zijn analytisch, toekomstgericht en onafhankelijk. Ze waarderen efficiëntie en visie."
+      },
+      "persona_summary": {
+        "summary": "Strateeg, rationeel, toekomstgericht"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "INTP": {
+      "intro_text": {
+        "title": "INTP — De Logische Denker",
+        "body": "INTP's zijn nieuwsgierig, theoretisch en conceptueel. Ze houden van ideeën en analyse."
+      },
+      "persona_summary": {
+        "summary": "Analytisch, conceptueel, nieuwsgierig"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "ENTJ": {
+      "intro_text": {
+        "title": "ENTJ — De Leider",
+        "body": "ENTJ's zijn directief, doelgericht en natuurlijke organisaties. Ze houden van strategische planning."
+      },
+      "persona_summary": {
+        "summary": "Leiderschap, decisief, strategisch"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "ENTP": {
+      "intro_text": {
+        "title": "ENTP — De Innovator",
+        "body": "ENTP's zijn vindingrijk, energiek en uitdager van ideeën. Ze houden van debat en vernieuwing."
+      },
+      "persona_summary": {
+        "summary": "Creatief, uitdagend, vindingrijk"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "INFJ": {
+      "intro_text": {
+        "title": "INFJ — De Inspirator",
+        "body": "INFJ's zijn empathisch, visie-gedreven en idealistisch. Ze zoeken betekenis en authenticiteit."
+      },
+      "persona_summary": {
+        "summary": "Empathisch, visie, idealistisch"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "INFP": {
+      "intro_text": {
+        "title": "INFP — De Bemiddelaar",
+        "body": "INFP's zijn idealistisch, loyaal aan hun waarden en creatief in zelfexpressie."
+      },
+      "persona_summary": {
+        "summary": "Waarden-gericht, creatief, loyaal"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "ENFJ": {
+      "intro_text": {
+        "title": "ENFJ — De Mentor",
+        "body": "ENFJ's zijn charismatisch, relationeel en inspirerend; ze helpen anderen groeien."
+      },
+      "persona_summary": {
+        "summary": "Charismatisch, hulpvaardig, relationeel"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "ENFP": {
+      "intro_text": {
+        "title": "ENFP — De Kampioen",
+        "body": "ENFP's zijn energiek, imaginatief en waarderen verbinding en mogelijkheden."
+      },
+      "persona_summary": {
+        "summary": "Enthousiast, creatief, verbindend"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "ISTJ": {
+      "intro_text": {
+        "title": "ISTJ — De Inspecteur",
+        "body": "ISTJ's zijn betrouwbaar, praktisch en waarderen structuur en traditie."
+      },
+      "persona_summary": {
+        "summary": "Betrouwbaar, praktisch, georganiseerd"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "ISFJ": {
+      "intro_text": {
+        "title": "ISFJ — De Beschermheer",
+        "body": "ISFJ's zijn zorgzaam, verantwoordelijk en behulpzaam; ze ondersteunen anderen loyaal."
+      },
+      "persona_summary": {
+        "summary": "Zorgzaam, loyaal, ondersteunend"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "ESTJ": {
+      "intro_text": {
+        "title": "ESTJ — De Bestuurder",
+        "body": "ESTJ's zijn pragmatisch, beslissend en houden van orde en efficiëntie."
+      },
+      "persona_summary": {
+        "summary": "Organiserend, beslissend, praktisch"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "ESFJ": {
+      "intro_text": {
+        "title": "ESFJ — De Verzamelaar",
+        "body": "ESFJ's zijn sociaal, attent en gericht op harmonie en ondersteuning."
+      },
+      "persona_summary": {
+        "summary": "Sociaal, ondersteunend, zorgzaam"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "ISTP": {
+      "intro_text": {
+        "title": "ISTP — De Vakman",
+        "body": "ISTP's zijn praktisch, nieuwsgierig en vaardig in het oplossen van problemen hands-on."
+      },
+      "persona_summary": {
+        "summary": "Praktisch, hands-on, probleemoplosser"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "ISFP": {
+      "intro_text": {
+        "title": "ISFP — De Avonturier",
+        "body": "ISFP's zijn artistiek, spontaan en waarderen esthetiek en vrijheid."
+      },
+      "persona_summary": {
+        "summary": "Artistiek, spontaan, vrijheidsgericht"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "ESTP": {
+      "intro_text": {
+        "title": "ESTP — De Doener",
+        "body": "ESTP's zijn energiek, direct en houden van actie en onmiddellijke resultaten."
+      },
+      "persona_summary": {
+        "summary": "Actiegericht, direct, energiek"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    },
+    "ESFP": {
+      "intro_text": {
+        "title": "ESFP — De Entertainer",
+        "body": "ESFP's houden van het leven, zijn expressief en gericht op verbinding met anderen."
+      },
+      "persona_summary": {
+        "summary": "Expressief, sociaal, energiek"
+      },
+      "zielsmissie_doel": null,
+      "uitdagingen": null,
+      "veldsterkte_tips": null,
+      "kosmisch_domein": null,
+      "persoonlijkheid_kern": null
+    }
+  },
+  "metadata": {
+    "created_at": "2025-09-13T00:28:08.810Z",
+    "version": "1.0.0",
+    "source": "manual_export",
+    "total_mbti_types": 16,
+    "total_content_items": 32,
+    "total_media_files": 16
+  }
+}

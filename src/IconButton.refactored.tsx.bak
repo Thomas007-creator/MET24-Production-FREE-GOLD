@@ -1,0 +1,235 @@
+import React, { createContext, useContext, ReactNode } from 'react';
+import { Button, ButtonProps } from '@nextui-org/react';
+import { LucideIcon } from 'lucide-react';
+
+// ===== PROVIDER PATTERN =====
+interface IconButtonContextValue {
+  variant: 'primary' | 'secondary' | 'ghost' | 'danger';
+  size: 'sm' | 'md' | 'lg';
+  loading: boolean;
+  tooltip?: string;
+}
+
+const IconButtonContext = createContext<IconButtonContextValue | null>(null);
+
+const useIconButton = () => {
+  const context = useContext(IconButtonContext);
+  if (!context) {
+    throw new Error('useIconButton must be used within IconButtonProvider');
+  }
+  return context;
+};
+
+// ===== PROVIDER COMPONENT =====
+interface IconButtonProviderProps {
+  children: ReactNode;
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  loading?: boolean;
+  tooltip?: string;
+}
+
+const IconButtonProvider: React.FC<IconButtonProviderProps> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  loading = false,
+  tooltip,
+}) => {
+  const value: IconButtonContextValue = {
+    variant,
+    size,
+    loading,
+    tooltip,
+  };
+
+  return (
+    <IconButtonContext.Provider value={value}>
+      {children}
+    </IconButtonContext.Provider>
+  );
+};
+
+// ===== BASE ICON BUTTON COMPONENT =====
+interface BaseIconButtonProps extends Omit<ButtonProps, 'className' | 'variant' | 'size' | 'isIconOnly' | 'isLoading' | 'title'> {
+  icon: LucideIcon;
+  className?: string;
+}
+
+const BaseIconButton: React.FC<BaseIconButtonProps> = ({
+  icon: Icon,
+  className = '',
+  ...props
+}) => {
+  const { variant, size, loading, tooltip } = useIconButton();
+
+  const baseClasses = 'backdrop-blur-xl border transition-all duration-300';
+
+  const variantClasses = {
+    primary:
+      'bg-glass-primary border-glass-border text-light-aqua-primary hover:bg-glass-accent hover:border-glass-borderStrong hover:shadow-glow-aqua-subtle',
+    secondary:
+      'bg-glass-secondary border-glass-borderLight text-light-aqua-primary hover:bg-glass-accent hover:border-glass-border hover:shadow-glow-aqua-subtle',
+    ghost:
+      'bg-transparent border-transparent text-light-aqua-primary hover:bg-glass-accent hover:border-glass-border',
+    danger:
+      'bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30 hover:border-red-500/50 hover:shadow-glow-danger',
+  };
+
+  const sizeClasses = {
+    sm: 'w-8 h-8 min-w-8',
+    md: 'w-10 h-10 min-w-10',
+    lg: 'w-12 h-12 min-w-12',
+  };
+
+  const iconSizes = {
+    sm: 16,
+    md: 20,
+    lg: 24,
+  };
+
+  const hoverClass = 'hover:-translate-y-0.5';
+  const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${hoverClass} ${className}`;
+
+  return (
+    <Button
+      isIconOnly
+      className={buttonClasses}
+      size={size}
+      isLoading={loading}
+      title={tooltip}
+      {...props}
+    >
+      <Icon size={iconSizes[size]} />
+    </Button>
+  );
+};
+
+// ===== LOADING COMPOSITION =====
+interface LoadingIconButtonProps extends Omit<BaseIconButtonProps, 'icon'> {
+  children?: ReactNode;
+}
+
+const LoadingIconButton: React.FC<LoadingIconButtonProps> = ({
+  children,
+  ...props
+}) => (
+  <IconButtonProvider loading={true}>
+    <BaseIconButton icon={() => <></>} {...props}>
+      {children}
+    </BaseIconButton>
+  </IconButtonProvider>
+);
+
+// ===== TOOLTIP COMPOSITION =====
+interface TooltipIconButtonProps extends BaseIconButtonProps {
+  tooltip: string;
+}
+
+const TooltipIconButton: React.FC<TooltipIconButtonProps> = ({
+  tooltip,
+  ...props
+}) => (
+  <IconButtonProvider tooltip={tooltip}>
+    <BaseIconButton {...props} />
+  </IconButtonProvider>
+);
+
+// ===== DISCRETE VARIANT COMPONENTS =====
+interface PrimaryIconButtonProps extends Omit<BaseIconButtonProps, 'icon'> {
+  icon: LucideIcon;
+}
+
+const PrimaryIconButton: React.FC<PrimaryIconButtonProps> = (props) => (
+  <IconButtonProvider variant="primary">
+    <BaseIconButton {...props} />
+  </IconButtonProvider>
+);
+
+const SecondaryIconButton: React.FC<PrimaryIconButtonProps> = (props) => (
+  <IconButtonProvider variant="secondary">
+    <BaseIconButton {...props} />
+  </IconButtonProvider>
+);
+
+const GhostIconButton: React.FC<PrimaryIconButtonProps> = (props) => (
+  <IconButtonProvider variant="ghost">
+    <BaseIconButton {...props} />
+  </IconButtonProvider>
+);
+
+const DangerIconButton: React.FC<PrimaryIconButtonProps> = (props) => (
+  <IconButtonProvider variant="danger">
+    <BaseIconButton {...props} />
+  </IconButtonProvider>
+);
+
+// ===== SIZE VARIANTS =====
+interface SmallIconButtonProps extends Omit<BaseIconButtonProps, 'icon'> {
+  icon: LucideIcon;
+}
+
+const SmallIconButton: React.FC<SmallIconButtonProps> = (props) => (
+  <IconButtonProvider size="sm">
+    <BaseIconButton {...props} />
+  </IconButtonProvider>
+);
+
+const MediumIconButton: React.FC<SmallIconButtonProps> = (props) => (
+  <IconButtonProvider size="md">
+    <BaseIconButton {...props} />
+  </IconButtonProvider>
+);
+
+const LargeIconButton: React.FC<SmallIconButtonProps> = (props) => (
+  <IconButtonProvider size="lg">
+    <BaseIconButton {...props} />
+  </IconButtonProvider>
+);
+
+// ===== BACKWARDS COMPATIBILITY LAYER =====
+interface IconButtonProps
+  extends Omit<ButtonProps, 'className' | 'variant' | 'size'> {
+  icon: LucideIcon;
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+  tooltip?: string;
+  loading?: boolean;
+}
+
+const IconButton: React.FC<IconButtonProps> = ({
+  icon,
+  variant = 'primary',
+  size = 'md',
+  className = '',
+  tooltip,
+  loading = false,
+  ...props
+}) => {
+  return (
+    <IconButtonProvider variant={variant} size={size} loading={loading} tooltip={tooltip}>
+      <BaseIconButton icon={icon} className={className} {...props} />
+    </IconButtonProvider>
+  );
+};
+
+// ===== EXPORTS =====
+export default IconButton;
+export type { IconButtonProps };
+
+// Composition API exports
+export {
+  IconButtonProvider,
+  useIconButton,
+  BaseIconButton,
+  LoadingIconButton,
+  TooltipIconButton,
+  PrimaryIconButton,
+  SecondaryIconButton,
+  GhostIconButton,
+  DangerIconButton,
+  SmallIconButton,
+  MediumIconButton,
+  LargeIconButton,
+};
